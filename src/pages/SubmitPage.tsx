@@ -1,11 +1,11 @@
 import Navigation from "@/components/Navigation";
-import Hero from "@/components/Hero";
 import Footer from "@/components/Footer";
+import PageHeader from "@/components/PageHeader";
+import Submit from "@/components/Submit";
 
-const Index = () => {
+const SubmitPage = () => {
   return (
     <div className="min-h-screen bg-background">
-      {/* Gradient overlay */}
       <div 
         className="fixed inset-0 pointer-events-none"
         style={{ background: "var(--gradient-hero)" }}
@@ -13,8 +13,13 @@ const Index = () => {
       
       <Navigation />
       
-      <main>
-        <Hero />
+      <main className="pt-32 pb-section">
+        <PageHeader 
+          tag="When You're Ready"
+          title="Submit Your Prototype"
+          description="Submit what you have. That's enough."
+        />
+        <Submit />
       </main>
       
       <Footer />
@@ -22,4 +27,4 @@ const Index = () => {
   );
 };
 
-export default Index;
+export default SubmitPage;

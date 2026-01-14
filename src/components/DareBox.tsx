@@ -49,7 +49,6 @@ const DareBox = () => {
     setIsRevealing(true);
     setIsOpen(true);
     
-    // Animate through random dares
     let iterations = 0;
     const maxIterations = 10;
     const interval = setInterval(() => {
@@ -76,19 +75,6 @@ const DareBox = () => {
   return (
     <div className="container mx-auto px-6">
       <div className="max-w-2xl mx-auto text-center">
-        <div className="mb-12 animate-fade-in">
-          <p className="font-mono text-sm tracking-[0.2em] text-primary mb-4 uppercase">
-            Optional Challenge
-          </p>
-          <h2 className="text-headline font-semibold tracking-tight mb-6">
-            The Dare Box
-          </h2>
-          <p className="text-body text-muted-foreground">
-            A playful nudge to rethink your approach. 
-            Take one if you dare—but once locked, there's no going back.
-          </p>
-        </div>
-
         <div 
           className={`relative p-10 md:p-14 rounded-3xl border transition-all duration-700 ${
             isOpen 
