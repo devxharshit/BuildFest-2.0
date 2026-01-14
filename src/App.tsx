@@ -8,6 +8,7 @@ import PromptsPage from "./pages/PromptsPage";
 import DareBoxPage from "./pages/DareBoxPage";
 import SubmitPage from "./pages/SubmitPage";
 import RulebookPage from "./pages/RulebookPage";
+import FoodOrderPage from "./pages/FoodOrderPage";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const App = () => (
           <Route path="/dare" element={<DareBoxPage />} />
           <Route path="/submit" element={<SubmitPage />} />
           <Route path="/rulebook" element={<RulebookPage />} />
+          <Route path="/food" element={<FoodOrderPage />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>
