@@ -6,6 +6,7 @@ const Navigation = () => {
   const navItems = [
     { path: "/prompts", label: "Prompts" },
     { path: "/dare", label: "Dare Box" },
+    { path: "/food", label: "Food" },
     { path: "/submit", label: "Submit" },
     { path: "/rulebook", label: "Rulebook" },
   ];
