@@ -49,19 +49,6 @@ const Prompts = () => {
   return (
     <div className="container mx-auto px-6">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16 animate-fade-in">
-          <p className="font-mono text-sm tracking-[0.2em] text-primary mb-4 uppercase">
-            Choose Your Direction
-          </p>
-          <h2 className="text-headline font-semibold tracking-tight mb-6">
-            The Prompts
-          </h2>
-          <p className="text-body text-muted-foreground max-w-xl mx-auto">
-            Each prompt is a beginning, not a destination. 
-            Interpret freely. There are no wrong answers—only unexplored ones.
-          </p>
-        </div>
-
         <div className="space-y-6">
           {prompts.map((prompt, index) => (
             <div

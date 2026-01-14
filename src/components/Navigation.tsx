@@ -1,83 +1,56 @@
-import { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 
-interface NavigationProps {
-  activeSection: string;
-  setActiveSection: (section: string) => void;
-}
-
-const Navigation = ({ activeSection, setActiveSection }: NavigationProps) => {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
+const Navigation = () => {
+  const location = useLocation();
 
   const navItems = [
-    { id: "prompts", label: "Prompts" },
-    { id: "dare", label: "Dare Box" },
-    { id: "submit", label: "Submit" },
-    { id: "rulebook", label: "Rulebook" },
+    { path: "/prompts", label: "Prompts" },
+    { path: "/dare", label: "Dare Box" },
+    { path: "/submit", label: "Submit" },
+    { path: "/rulebook", label: "Rulebook" },
   ];
 
-  const scrollToSection = (id: string) => {
-    setActiveSection(id);
-    const element = document.getElementById(id);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   return (
-    <nav
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${
-        scrolled 
-          ? "bg-background/80 backdrop-blur-xl border-b border-border/50" 
-          : "bg-transparent"
-      }`}
-    >
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-background/80 backdrop-blur-xl border-b border-border/50">
       <div className="container mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
-          <button 
-            onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+          <Link 
+            to="/"
             className="font-mono text-sm tracking-wider text-muted-foreground hover:text-foreground transition-colors"
           >
             BUILDFEST
-          </button>
+          </Link>
           
           <div className="hidden md:flex items-center gap-8">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
+              <Link
+                key={item.path}
+                to={item.path}
                 className={`text-sm transition-all duration-300 ${
-                  activeSection === item.id
+                  location.pathname === item.path
                     ? "text-foreground"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
           </div>
 
           {/* Mobile menu */}
           <div className="md:hidden flex items-center gap-4">
             {navItems.map((item) => (
-              <button
-                key={item.id}
-                onClick={() => scrollToSection(item.id)}
+              <Link
+                key={item.path}
+                to={item.path}
                 className={`text-xs transition-colors ${
-                  activeSection === item.id
+                  location.pathname === item.path
                     ? "text-foreground"
                     : "text-muted-foreground"
                 }`}
               >
                 {item.label.split(" ")[0]}
-              </button>
+              </Link>
             ))}
           </div>
         </div>

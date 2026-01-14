@@ -24,7 +24,6 @@ const Submit = () => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // In a real app, this would submit to a backend
     setSubmitted(true);
   };
 
@@ -53,18 +52,6 @@ const Submit = () => {
   return (
     <div className="container mx-auto px-6">
       <div className="max-w-xl mx-auto">
-        <div className="text-center mb-12 animate-fade-in">
-          <p className="font-mono text-sm tracking-[0.2em] text-primary mb-4 uppercase">
-            When You're Ready
-          </p>
-          <h2 className="text-headline font-semibold tracking-tight mb-6">
-            Submit Your Prototype
-          </h2>
-          <p className="text-body text-muted-foreground">
-            Submit what you have. That's enough.
-          </p>
-        </div>
-
         <form onSubmit={handleSubmit} className="space-y-6 animate-fade-in-up">
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">

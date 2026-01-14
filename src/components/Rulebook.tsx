@@ -18,18 +18,6 @@ const Rulebook = () => {
   return (
     <div className="container mx-auto px-6">
       <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-16 animate-fade-in">
-          <p className="font-mono text-sm tracking-[0.2em] text-primary mb-4 uppercase">
-            The Philosophy
-          </p>
-          <h2 className="text-headline font-semibold tracking-tight mb-6">
-            Rulebook
-          </h2>
-          <p className="text-body text-muted-foreground max-w-xl mx-auto">
-            This isn't a list of rules. It's a way of thinking.
-          </p>
-        </div>
-
         <div className="grid md:grid-cols-2 gap-8 mb-16">
           {/* We Care About */}
           <div className="p-8 rounded-2xl border border-primary/20 bg-gradient-to-b from-primary/5 to-transparent animate-fade-in-up">

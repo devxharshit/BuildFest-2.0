@@ -1,3 +1,5 @@
+import { Link } from "react-router-dom";
+
 const Hero = () => {
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 pt-20 relative">
@@ -17,18 +19,18 @@ const Hero = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <a 
-            href="#prompts"
+          <Link 
+            to="/prompts"
             className="inline-flex items-center justify-center h-14 px-10 rounded-xl bg-primary text-primary-foreground font-semibold transition-all duration-300 hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] hover:scale-105"
           >
             Explore Prompts
-          </a>
-          <a 
-            href="#rulebook"
+          </Link>
+          <Link 
+            to="/rulebook"
             className="inline-flex items-center justify-center h-14 px-10 rounded-xl border border-border text-foreground font-medium transition-all duration-300 hover:border-primary/50 hover:bg-secondary"
           >
             Read the Philosophy
-          </a>
+          </Link>
         </div>
       </div>
       
