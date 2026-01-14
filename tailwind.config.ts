@@ -9,10 +9,22 @@ export default {
       center: true,
       padding: "2rem",
       screens: {
-        "2xl": "1400px",
+        "2xl": "1200px",
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Space Grotesk", "system-ui", "sans-serif"],
+        mono: ["JetBrains Mono", "monospace"],
+      },
+      fontSize: {
+        "display": ["clamp(3rem, 8vw, 6rem)", { lineHeight: "1.1", letterSpacing: "-0.02em" }],
+        "headline": ["clamp(2rem, 5vw, 3.5rem)", { lineHeight: "1.2", letterSpacing: "-0.01em" }],
+        "title": ["clamp(1.5rem, 3vw, 2rem)", { lineHeight: "1.3" }],
+        "body-lg": ["1.25rem", { lineHeight: "1.7" }],
+        "body": ["1.125rem", { lineHeight: "1.7" }],
+        "small": ["0.875rem", { lineHeight: "1.5" }],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
@@ -47,15 +59,13 @@ export default {
           DEFAULT: "hsl(var(--card))",
           foreground: "hsl(var(--card-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
+        glow: "hsl(var(--glow))",
+        surface: {
+          elevated: "hsl(var(--surface-elevated))",
+        },
+        text: {
+          subtle: "hsl(var(--text-subtle))",
+          muted: "hsl(var(--text-muted))",
         },
       },
       borderRadius: {
@@ -65,25 +75,20 @@ export default {
       },
       keyframes: {
         "accordion-down": {
-          from: {
-            height: "0",
-          },
-          to: {
-            height: "var(--radix-accordion-content-height)",
-          },
+          from: { height: "0" },
+          to: { height: "var(--radix-accordion-content-height)" },
         },
         "accordion-up": {
-          from: {
-            height: "var(--radix-accordion-content-height)",
-          },
-          to: {
-            height: "0",
-          },
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: "0" },
         },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+      },
+      spacing: {
+        "section": "clamp(4rem, 10vw, 8rem)",
       },
     },
   },
