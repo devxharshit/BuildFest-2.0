@@ -1,5 +1,5 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+
 import PageHeader from "@/components/PageHeader";
 import Submit from "@/components/Submit";
 
@@ -22,7 +22,6 @@ const SubmitPage = () => {
         <Submit />
       </main>
       
-      <Footer />
     </div>
   );
 };

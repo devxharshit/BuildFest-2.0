@@ -1,5 +1,4 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import FoodOrder from "@/components/FoodOrder";
 import PageHeader from "@/components/PageHeader";
 
@@ -22,7 +21,6 @@ const FoodOrderPage = () => {
         <FoodOrder />
       </main>
       
-      <Footer />
     </div>
   );
 };

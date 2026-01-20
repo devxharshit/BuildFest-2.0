@@ -1,5 +1,4 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import Rulebook from "@/components/Rulebook";
 
@@ -22,7 +21,6 @@ const RulebookPage = () => {
         <Rulebook />
       </main>
       
-      <Footer />
     </div>
   );
 };

@@ -1,5 +1,4 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
 import PageHeader from "@/components/PageHeader";
 import DareBox from "@/components/DareBox";
 
@@ -22,7 +21,7 @@ const DareBoxPage = () => {
         <DareBox />
       </main>
       
-      <Footer />
+      
     </div>
   );
 };

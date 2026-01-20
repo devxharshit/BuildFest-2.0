@@ -1,5 +1,5 @@
 import Navigation from "@/components/Navigation";
-import Footer from "@/components/Footer";
+
 import PageHeader from "@/components/PageHeader";
 import Prompts from "@/components/Prompts";
 
@@ -22,7 +22,7 @@ const PromptsPage = () => {
         <Prompts />
       </main>
       
-      <Footer />
+
     </div>
   );
 };
