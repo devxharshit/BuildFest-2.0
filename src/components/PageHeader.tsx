@@ -1,5 +1,3 @@
-import { motion } from "framer-motion";
-
 interface PageHeaderProps {
   tag: string;
   title: string;
@@ -8,27 +6,24 @@ interface PageHeaderProps {
 
 const PageHeader = ({ tag, title, description }: PageHeaderProps) => {
   return (
-    <div className="container mx-auto px-6 pt-16 mb-12">
-      <div className="max-w-4xl mx-auto border-l border-accent-cyan/30 pl-6 md:pl-8">
-        
-        {/* Minimal Mono Tag */}
-        <p className="font-mono text-[10px] tracking-[0.3em] text-accent-cyan/70 uppercase mb-2">
-          {">"} {tag}
-        </p>
-
-        {/* Clean, Sharp Title */}
-        <h1 className="text-4xl md:text-5xl font-bold tracking-tight text-white mb-4 uppercase italic">
-          {title}<span className="text-accent-cyan animate-pulse">_</span>
-        </h1>
-
-        {/* Muted Description */}
-        <p className="text-sm md:text-base text-muted-foreground font-mono leading-relaxed max-w-2xl opacity-80">
-          {description}
-        </p>
-        
-        {/* Subtle Bottom Line Decor */}
-        <div className="mt-6 w-24 h-[1px] bg-gradient-to-r from-accent-cyan/40 to-transparent" />
+    <div className="w-full flex flex-col items-center text-center px-6">
+      {/* Small Cyan Tag */}
+      <div className="flex items-center gap-2 mb-2 font-mono text-[10px] tracking-[0.3em] text-accent-cyan uppercase">
+        <span>{">"}</span> {tag}
       </div>
+
+      {/* Main Title - Italic Bold with Cursor */}
+      <h1 className="text-4xl md:text-6xl font-bold tracking-tighter uppercase italic mb-4">
+        {title}<span className="text-accent-cyan underline decoration-4 underline-offset-8">_</span>
+      </h1>
+
+      {/* Description */}
+      <p className="text-[#94a3b8] font-mono text-sm max-w-2xl leading-relaxed opacity-70">
+        {description}
+      </p>
+      
+      {/* Decorative center line */}
+      <div className="mt-8 w-16 h-px bg-white/10" />
     </div>
   );
 };
