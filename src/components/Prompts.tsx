@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const prompts = [
   {
@@ -44,67 +45,24 @@ const prompts = [
 ];
 
 const TimelineNode = ({ index, isHovered }: { index: number; isHovered: boolean }) => (
-  <div className="absolute left-0 top-8 -translate-x-1/2 flex flex-col items-center z-10">
-    {/* Outer glow ring */}
+  <div className="absolute left-0 top-10 -translate-x-1/2 flex flex-col items-center z-10">
+    {/* Node Square - Hacker Style */}
     <div 
-      className={`absolute w-8 h-8 rounded-full transition-all duration-500 ${
-        isHovered ? 'scale-150 opacity-100' : 'scale-100 opacity-0'
-      }`}
-      style={{
-        background: 'radial-gradient(circle, hsl(var(--primary) / 0.4) 0%, transparent 70%)',
-        filter: 'blur(4px)',
-      }}
-    />
-    
-    {/* Main node */}
-    <div 
-      className={`relative w-4 h-4 rounded-full border-2 transition-all duration-300 ${
+      className={`relative w-3 h-3 border rotate-45 transition-all duration-300 ${
         isHovered 
-          ? 'border-primary bg-primary shadow-[0_0_20px_hsl(var(--primary))]' 
-          : 'border-primary/50 bg-background'
+          ? 'border-accent-cyan bg-accent-cyan shadow-[0_0_15px_#00f2ff]' 
+          : 'border-accent-cyan/40 bg-[#020617]'
       }`}
-    >
-      {/* Inner pulse */}
-      <div 
-        className={`absolute inset-1 rounded-full bg-primary animate-pulse ${
-          isHovered ? 'opacity-100' : 'opacity-50'
-        }`}
-      />
-    </div>
-    
-    {/* Data tag */}
-    <div 
-      className={`absolute -left-16 top-0 font-mono text-[10px] transition-all duration-300 ${
-        isHovered ? 'text-primary opacity-100' : 'text-primary/40 opacity-60'
-      }`}
-    >
-      [{String(index + 1).padStart(2, "0")}]
-    </div>
-  </div>
-);
-
-const TimelineLine = () => (
-  <div className="absolute left-0 top-0 bottom-0 w-px -translate-x-1/2">
-    {/* Base line */}
-    <div className="absolute inset-0 bg-gradient-to-b from-primary/20 via-primary/40 to-primary/20" />
-    
-    {/* Animated pulse traveling down */}
-    <div 
-      className="absolute w-full h-32 animate-timeline-pulse"
-      style={{
-        background: 'linear-gradient(to bottom, transparent, hsl(var(--primary)), transparent)',
-        filter: 'blur(1px)',
-      }}
     />
     
-    {/* Glow effect */}
+    {/* Index Indicator */}
     <div 
-      className="absolute inset-0 w-4 -translate-x-1/2"
-      style={{
-        background: 'linear-gradient(to bottom, transparent, hsl(var(--primary) / 0.1), transparent)',
-        filter: 'blur(8px)',
-      }}
-    />
+      className={`absolute -left-12 top-[-4px] font-mono text-[10px] tracking-tighter transition-all duration-300 ${
+        isHovered ? 'text-accent-cyan' : 'text-white/20'
+      }`}
+    >
+      0{index + 1}
+    </div>
   </div>
 );
 
@@ -112,87 +70,85 @@ const Prompts = () => {
   const [hoveredId, setHoveredId] = useState<number | null>(null);
 
   return (
-    <div className="container mx-auto px-6">
-      <div className="max-w-4xl mx-auto">
-        {/* Timeline container */}
-        <div className="relative pl-12 md:pl-16">
-          {/* Main timeline line */}
-          <TimelineLine />
-          
-          <div className="space-y-8">
-            {prompts.map((prompt, index) => (
-              <div
-                key={prompt.id}
-                onMouseEnter={() => setHoveredId(prompt.id)}
-                onMouseLeave={() => setHoveredId(null)}
-                className="group animate-fade-in-up relative"
-                style={{ animationDelay: `${index * 0.1}s` }}
-              >
-                {/* Timeline node */}
-                <TimelineNode index={index} isHovered={hoveredId === prompt.id} />
-                
-                {/* Connector line to card */}
-                <div 
-                  className={`absolute left-0 top-8 h-px transition-all duration-500 ${
-                    hoveredId === prompt.id ? 'w-8 md:w-12' : 'w-4 md:w-8'
-                  }`}
-                  style={{
-                    background: hoveredId === prompt.id 
-                      ? 'linear-gradient(to right, hsl(var(--primary)), hsl(var(--primary) / 0.3))'
-                      : 'linear-gradient(to right, hsl(var(--primary) / 0.5), transparent)',
-                  }}
-                />
+    <div className="max-w-4xl mx-auto px-6">
+      <div className="relative pl-8 md:pl-16">
+        
+        {/* Vertical Data Stream Line */}
+        <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-accent-cyan/50 via-accent-cyan/10 to-transparent -translate-x-1/2" />
+        
+        <div className="space-y-12">
+          {prompts.map((prompt, index) => (
+            <motion.div
+              key={prompt.id}
+              initial={{ opacity: 0, x: 20 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ delay: index * 0.1 }}
+              onMouseEnter={() => setHoveredId(prompt.id)}
+              onMouseLeave={() => setHoveredId(null)}
+              className="relative group"
+            >
+              <TimelineNode index={index} isHovered={hoveredId === prompt.id} />
 
-                {/* Prompt card */}
-                <div
-                  className={`relative p-8 md:p-10 rounded-2xl border transition-all duration-500 ml-4 ${
-                    hoveredId === prompt.id
-                      ? "border-primary/50 bg-card shadow-[0_0_40px_hsl(var(--primary)/0.15)]"
-                      : "border-border/50 bg-card/50"
-                  }`}
-                >
-                  {/* Tech corner accents */}
-                  <div className={`absolute top-0 right-0 w-8 h-8 border-t-2 border-r-2 rounded-tr-2xl transition-all duration-300 ${
-                    hoveredId === prompt.id ? 'border-primary/60' : 'border-primary/20'
-                  }`} />
-                  <div className={`absolute bottom-0 left-0 w-8 h-8 border-b-2 border-l-2 rounded-bl-2xl transition-all duration-300 ${
-                    hoveredId === prompt.id ? 'border-accent-cyan/60' : 'border-accent-cyan/20'
-                  }`} />
-                  
-                  <div className="flex-1">
-                    <div className="flex items-center gap-4 mb-4">
-                      <span className="font-mono text-xs text-primary/60 px-2 py-1 bg-primary/10 rounded">
-                        PROMPT.{String(prompt.id).padStart(2, "0")}
-                      </span>
-                      <div className={`h-px flex-1 transition-all duration-500 ${
-                        hoveredId === prompt.id ? 'bg-gradient-to-r from-primary/40 to-transparent' : 'bg-transparent'
-                      }`} />
-                    </div>
-                    <h3 className="text-title font-medium mb-4 text-foreground group-hover:text-gradient-accent transition-all duration-300">
-                      {prompt.title}
-                    </h3>
-                    <p className="text-body text-muted-foreground leading-relaxed whitespace-pre-line">
-                      {prompt.content}
-                    </p>
-                  </div>
-                  
-                  {/* Scanning line effect on hover */}
-                  <div 
-                    className={`absolute inset-0 pointer-events-none overflow-hidden rounded-2xl transition-opacity duration-300 ${
-                      hoveredId === prompt.id ? 'opacity-100' : 'opacity-0'
-                    }`}
-                  >
-                    <div 
-                      className="absolute w-full h-px bg-gradient-to-r from-transparent via-primary/50 to-transparent animate-scan-line"
-                    />
-                  </div>
-                </div>
+              {/* Connector */}
+              <div className={`absolute left-0 top-10 h-[1px] transition-all duration-500 ${
+                hoveredId === prompt.id ? 'w-10 bg-accent-cyan' : 'w-4 bg-white/10'
+              }`} />
+
+              {/* Sharp Prompt Card */}
+              <div
+                className={`relative p-6 md:p-8 transition-all duration-500 ml-4 border-l-2 ${
+                  hoveredId === prompt.id
+                    ? "bg-accent-cyan/5 border-accent-cyan shadow-[20px_0_40px_-20px_rgba(0,242,255,0.1)]"
+                    : "bg-[#0a0f1e] border-white/10"
+                }`}
+              >
+                {/* Corner Accent */}
+                <div className={`absolute top-0 right-0 w-4 h-4 border-t border-r transition-all duration-300 ${
+                  hoveredId === prompt.id ? 'border-accent-cyan opacity-100' : 'opacity-0'
+                }`} />
+
+                <header className="flex items-center gap-4 mb-6">
+                  <span className={`font-mono text-[10px] tracking-[0.3em] uppercase py-1 px-2 border ${
+                    hoveredId === prompt.id ? 'border-accent-cyan text-accent-cyan' : 'border-white/10 text-white/30'
+                  }`}>
+                    Data_Stream.{String(prompt.id).padStart(2, "0")}
+                  </span>
+                  <div className={`h-[1px] flex-1 ${hoveredId === prompt.id ? 'bg-accent-cyan/20' : 'bg-white/5'}`} />
+                </header>
+
+                <h3 className={`text-2xl md:text-3xl font-bold tracking-tighter uppercase italic mb-4 transition-colors duration-300 ${
+                  hoveredId === prompt.id ? 'text-white' : 'text-white/60'
+                }`}>
+                  {prompt.title}
+                </h3>
+
+                <p className={`font-mono text-sm leading-relaxed whitespace-pre-line transition-colors duration-300 ${
+                  hoveredId === prompt.id ? 'text-accent-cyan/80' : 'text-white/40'
+                }`}>
+                  {prompt.content}
+                </p>
+
+                {/* Cyber Scanline Overlay */}
+                <AnimatePresence>
+                  {hoveredId === prompt.id && (
+                    <motion.div 
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      className="absolute inset-0 pointer-events-none overflow-hidden"
+                    >
+                      <div className="absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] z-10 bg-[length:100%_2px,3px_100%] pointer-events-none" />
+                      <motion.div 
+                        animate={{ y: ["0%", "100%"] }}
+                        transition={{ repeat: Infinity, duration: 2, ease: "linear" }}
+                        className="w-full h-[1px] bg-accent-cyan/30 shadow-[0_0_15px_#00f2ff]"
+                      />
+                    </motion.div>
+                  )}
+                </AnimatePresence>
               </div>
-            ))}
-          </div>
-          
-          {/* Timeline end cap */}
-          <div className="absolute left-0 bottom-0 -translate-x-1/2 w-2 h-2 rounded-full bg-primary/30" />
+            </motion.div>
+          ))}
         </div>
       </div>
     </div>

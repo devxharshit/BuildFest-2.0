@@ -4,26 +4,23 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
+import { Utensils, Zap, Coffee, Droplet } from "lucide-react";
 
 interface MenuItem {
   id: string;
   name: string;
   description: string;
   category: "snack" | "drink" | "meal";
-  icon: string;
+  icon: React.ReactNode;
 }
 
 const menuItems: MenuItem[] = [
-  { id: "coffee", name: "Coffee", description: "Hot or iced", category: "drink", icon: "☕" },
-  { id: "tea", name: "Tea", description: "Green or chai", category: "drink", icon: "🍵" },
-  { id: "energy", name: "Energy Drink", description: "Stay wired", category: "drink", icon: "⚡" },
-  { id: "water", name: "Water", description: "Stay hydrated", category: "drink", icon: "💧" },
-  { id: "pizza", name: "Pizza Slice", description: "Classic fuel", category: "meal", icon: "🍕" },
-  { id: "sandwich", name: "Sandwich", description: "Quick bite", category: "meal", icon: "🥪" },
-  { id: "noodles", name: "Instant Noodles", description: "Late night classic", category: "meal", icon: "🍜" },
-  { id: "chips", name: "Chips", description: "Crunchy snack", category: "snack", icon: "🥔" },
-  { id: "cookies", name: "Cookies", description: "Sweet treat", category: "snack", icon: "🍪" },
-  { id: "fruit", name: "Fresh Fruit", description: "Healthy option", category: "snack", icon: "🍎" },
+  { id: "coffee", name: "COFFEE", description: "SYSTEM_FUEL_HOT", category: "drink", icon: <Coffee className="w-5 h-5" /> },
+  { id: "energy", name: "ENERGY_DRINK", description: "OVERCLOCK_MODE", category: "drink", icon: <Zap className="w-5 h-5" /> },
+  { id: "water", name: "H2O_LIQUID", description: "STABLE_HYDRATION", category: "drink", icon: <Droplet className="w-5 h-5" /> },
+  { id: "pizza", name: "PIZZA_SLICE", description: "SECTOR_A_FUEL", category: "meal", icon: "🍕" },
+  { id: "noodles", name: "NOODLE_PACK", description: "CORE_PROCESS_MEAL", category: "meal", icon: "🍜" },
+  { id: "chips", name: "CRUNCH_DATA", description: "PACKET_SNACK", category: "snack", icon: "🥔" },
 ];
 
 const FoodOrder = () => {
@@ -37,140 +34,125 @@ const FoodOrder = () => {
   const toggleItem = (itemId: string) => {
     setSelectedItems(prev => 
       prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId)
+        ? prev.filter(id => id !== itemId) 
         : [...prev, itemId]
     );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!teamName || !tableNumber || selectedItems.length === 0) {
       toast({
-        title: "Missing information",
-        description: "Please fill in your team name, table number, and select at least one item.",
+        title: "AUTH_ERROR",
+        description: "Missing Team_ID, Table_Loc, or Payload_Items.",
         variant: "destructive",
       });
       return;
     }
-
     setIsSubmitting(true);
-    
-    // Simulate submission
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
     toast({
-      title: "Order received! 🎉",
-      description: "Your fuel is on its way. Keep building!",
+      title: "ORDER_DEPLOYED",
+      description: "Fuel is in transit to your coordinates.",
     });
-    
-    setTeamName("");
-    setTableNumber("");
-    setSelectedItems([]);
-    setSpecialRequests("");
-    setIsSubmitting(false);
+    setTeamName(""); setTableNumber(""); setSelectedItems([]); setSpecialRequests(""); setIsSubmitting(false);
   };
 
   const categories = [
-    { key: "drink", label: "Drinks", items: menuItems.filter(i => i.category === "drink") },
-    { key: "meal", label: "Meals", items: menuItems.filter(i => i.category === "meal") },
-    { key: "snack", label: "Snacks", items: menuItems.filter(i => i.category === "snack") },
+    { key: "drink", label: "01_LIQUIDS", items: menuItems.filter(i => i.category === "drink") },
+    { key: "meal", label: "02_SOLID_FUEL", items: menuItems.filter(i => i.category === "meal") },
+    { key: "snack", label: "03_SNACK_PACKETS", items: menuItems.filter(i => i.category === "snack") },
   ];
 
   return (
-    <section className="px-6 max-w-4xl mx-auto">
-      <form onSubmit={handleSubmit} className="space-y-10">
-        {/* Team Info */}
-        <div className="grid sm:grid-cols-2 gap-6">
+    <section className="max-w-4xl mx-auto px-6 font-mono text-sm">
+      <form onSubmit={handleSubmit} className="space-y-12">
+        
+        {/* TEAM & LOCATION DATA */}
+        <div className="grid sm:grid-cols-2 gap-8">
           <div className="space-y-2">
-            <Label htmlFor="teamName" className="text-sm font-medium text-muted-foreground">
-              Team Name
-            </Label>
+            <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Team_Identifier</Label>
             <Input
-              id="teamName"
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="Your team name"
-              className="bg-card border-border focus:border-primary h-12"
+              placeholder="ENTER_TEAM_ID"
+              className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20 focus:border-accent-cyan"
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="tableNumber" className="text-sm font-medium text-muted-foreground">
-              Table / Location
-            </Label>
+            <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Table_Coordinates</Label>
             <Input
-              id="tableNumber"
               value={tableNumber}
               onChange={(e) => setTableNumber(e.target.value)}
-              placeholder="e.g., Table 5, Zone B"
-              className="bg-card border-border focus:border-primary h-12"
+              placeholder="TABLE_05_ZONE_B"
+              className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20 focus:border-accent-cyan"
             />
           </div>
         </div>
 
-        {/* Menu Categories */}
+        {/* MENU CATEGORIES */}
         {categories.map(({ key, label, items }) => (
-          <div key={key} className="space-y-4">
-            <h3 className="text-lg font-semibold text-foreground flex items-center gap-2">
-              <span className="w-8 h-[2px] bg-gradient-to-r from-primary to-accent-cyan" />
-              {label}
-            </h3>
-            <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-3">
+          <div key={key} className="space-y-6">
+            <div className="flex items-center gap-4 border-b border-white/5 pb-2">
+              <h3 className="text-xs font-bold text-white tracking-[0.4em] uppercase italic">
+                {label}
+              </h3>
+            </div>
+            
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
               {items.map((item) => (
-                <label
+                <div
                   key={item.id}
+                  onClick={() => toggleItem(item.id)}
                   className={`
-                    relative flex items-center gap-3 p-4 rounded-xl border cursor-pointer
-                    transition-all duration-300
+                    relative p-4 border transition-all cursor-pointer flex items-center gap-4
                     ${selectedItems.includes(item.id) 
-                      ? 'border-primary bg-primary/10 shadow-[0_0_20px_hsl(var(--primary)/0.2)]' 
-                      : 'border-border bg-card hover:border-primary/50'}
+                      ? 'border-accent-cyan bg-accent-cyan/10 shadow-[0_0_15px_rgba(0,242,255,0.1)]' 
+                      : 'border-white/10 bg-[#0a0f1e] hover:border-accent-cyan/40'}
                   `}
                 >
-                  <Checkbox
-                    checked={selectedItems.includes(item.id)}
-                    onCheckedChange={() => toggleItem(item.id)}
-                    className="sr-only"
-                  />
-                  <span className="text-2xl">{item.icon}</span>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium text-foreground text-sm">{item.name}</p>
-                    <p className="text-xs text-muted-foreground truncate">{item.description}</p>
+                  <div className={`text-2xl ${selectedItems.includes(item.id) ? 'text-accent-cyan' : 'text-white/40'}`}>
+                    {item.icon}
+                  </div>
+                  <div className="flex-1">
+                    <p className={`text-xs font-bold ${selectedItems.includes(item.id) ? 'text-accent-cyan' : 'text-white/80'}`}>
+                      {item.name}
+                    </p>
+                    <p className="text-[10px] text-white/30 tracking-tight mt-0.5">{item.description}</p>
                   </div>
                   {selectedItems.includes(item.id) && (
-                    <div className="absolute top-2 right-2 w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <div className="w-1.5 h-1.5 bg-accent-cyan animate-pulse" />
                   )}
-                </label>
+                </div>
               ))}
             </div>
           </div>
         ))}
 
-        {/* Special Requests */}
+        {/* SPECIAL REQUESTS */}
         <div className="space-y-2">
-          <Label htmlFor="specialRequests" className="text-sm font-medium text-muted-foreground">
-            Special Requests (Optional)
-          </Label>
+          <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Dietary_Exceptions</Label>
           <Input
-            id="specialRequests"
             value={specialRequests}
             onChange={(e) => setSpecialRequests(e.target.value)}
-            placeholder="Any dietary restrictions or preferences?"
-            className="bg-card border-border focus:border-primary h-12"
+            placeholder="NULL // NONE"
+            className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20"
           />
         </div>
 
-        {/* Submit */}
-        <div className="flex flex-col items-center gap-4 pt-4">
-          <Button
+        {/* SUBMIT PROTOCOL */}
+        <div className="flex flex-col items-center gap-6 pt-4">
+          <button
             type="submit"
             disabled={isSubmitting}
-            className="h-14 px-12 text-base font-semibold bg-gradient-to-r from-primary to-accent-cyan hover:shadow-[0_0_30px_hsl(var(--primary)/0.4)] transition-all duration-300"
+            className="w-full sm:w-auto px-16 h-14 bg-accent-cyan text-[#020617] font-bold uppercase italic skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-[1.02] disabled:opacity-50"
           >
-            {isSubmitting ? "Sending order..." : `Order ${selectedItems.length} item${selectedItems.length !== 1 ? 's' : ''}`}
-          </Button>
-          <p className="text-sm text-muted-foreground text-center">
-            Orders typically arrive within 10-15 minutes
+            <span className="skew-x-[12deg] flex items-center gap-3">
+              {isSubmitting ? "TRANSMITTING..." : `REQUEST_FUEL_${selectedItems.length}_UNITS`}
+            </span>
+          </button>
+          <p className="text-[10px] tracking-widest text-white/20 uppercase">
+            Estimated_ETA: 10_to_15_Minutes
           </p>
         </div>
       </form>
