@@ -12,43 +12,55 @@ const Navigation = () => {
   ];
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#020617]/90 backdrop-blur-xl border-b border-white/10">
-      <div className="container mx-auto px-6">
-        <div className="flex items-center justify-between h-20">
+    <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#020617]/98 backdrop-blur-xl border-b border-white/10">
+      <div className="mx-auto px-6 lg:px-12">
+        {/* Increased height to h-24 to accommodate larger elements */}
+        <div className="flex items-center justify-between h-24">
           
+          {/* BRANDING SECTION: LARGER LOGO & TEXT */}
           <Link to="/" className="flex items-center gap-4 group flex-shrink-0">
             <motion.img 
               src="/Novus_Full_White (1).png" 
               alt="Novus Logo" 
-              className="h-10 w-auto object-contain transition-all duration-300 group-hover:brightness-125"
+              // Increased height from h-8 to h-12
+              className="h-12 w-auto object-contain transition-all duration-300 group-hover:scale-105"
             />
-            <div className="hidden lg:block h-5 w-[1px] bg-white/20" />
-            <span className="hidden lg:block font-mono text-[9px] tracking-[0.4em] text-white/30 uppercase">
+            <div className="h-8 w-[2px] bg-white/20" /> {/* Thicker, taller separator */}
+            <span className="font-mono text-xl tracking-tighter text-white font-black italic uppercase">
               BuildFest 2.0
             </span>
           </Link>
           
-          <div className="hidden md:flex items-center gap-8 lg:gap-12">
+          {/* NAVIGATION LINKS: MAXIMUM VISIBILITY */}
+          <div className="hidden md:flex items-center gap-10 lg:gap-14">
             {navItems.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
-                className={`font-mono text-[11px] uppercase tracking-[0.2em] transition-all duration-300 relative py-2 ${
-                  location.pathname === item.path ? "text-accent-cyan" : "text-white/40 hover:text-white"
+                // Increased to text-xl for high visibility
+                className={`font-mono text-xl font-black uppercase tracking-tighter transition-all duration-300 relative py-2 ${
+                  location.pathname === item.path 
+                    ? "text-accent-cyan" 
+                    : "text-white/70 hover:text-white"
                 }`}
               >
                 {item.label}
                 {location.pathname === item.path && (
-                  <motion.div layoutId="navUnderline" className="absolute -bottom-[29px] left-0 right-0 h-[2px] bg-accent-cyan shadow-[0_0_10px_#00f2ff]" />
+                  <motion.div 
+                    layoutId="navUnderline" 
+                    // Adjusted underline position for larger height
+                    className="absolute -bottom-[31px] left-0 right-0 h-[4px] bg-accent-cyan shadow-[0_0_20px_#00f2ff]" 
+                  />
                 )}
               </Link>
             ))}
 
+            {/* SUBMIT BUTTON: BOLDER & LARGER */}
             <Link
               to="/submit"
-              className="px-6 py-2 border border-accent-cyan text-accent-cyan font-mono text-[11px] uppercase tracking-[0.2em] italic font-bold skew-x-[-12deg] transition-all hover:bg-accent-cyan hover:text-[#020617]"
+              className="px-8 py-3 border-4 border-accent-cyan bg-accent-cyan/10 text-accent-cyan font-mono text-xl font-black uppercase tracking-tighter italic skew-x-[-12deg] transition-all hover:bg-accent-cyan hover:scale-105 hover:text-[#020617]"
             >
-              <span className="inline-block skew-x-[12deg]">Submit</span>
+              <span className="inline-block skew-x-[12deg]">SUBMIT</span>
             </Link>
           </div>
         </div>

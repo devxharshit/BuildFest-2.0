@@ -33,7 +33,7 @@ const FoodOrder = () => {
       const min = now.getMinutes();
 
       // Active only between 13:36 and 13:40
-      const isWindowOpen = (hour === 13 && min >= 35 && min < 45);
+      const isWindowOpen = (hour === 23 && min >= 1 && min < 39);
       setIsOpen(isWindowOpen);
     };
 

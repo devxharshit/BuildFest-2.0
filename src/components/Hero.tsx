@@ -86,7 +86,7 @@ const Hero = () => {
             <span className="w-2 h-2 bg-green-500 rounded-full" />
           </div>
           <p className="font-mono text-[10px] tracking-[0.4em] text-accent-cyan uppercase">
-            CONNECTION: SECURE // PORT: 8080
+            CONNECTION: SECURE // PORT: 192.169.001
           </p>
         </div>
         
@@ -96,13 +96,17 @@ const Hero = () => {
         </h1>
         
         {/* Command Line Terminal Box */}
-        <div className="bg-black/60 border-l-4 border-accent-cyan p-6 mb-12 max-w-2xl mx-auto text-left backdrop-blur-md border border-white/5 shadow-2xl">
+
+        <motion.div 
+        className="bg-black/10 border-l-4 border-accent-cyan/40 p-6 mb-12 max-w-2xl mx-auto text-left backdrop-blur-md shadow-2xl overflow-x-hidden whitespace-nowrap">
+          <div className="absolute top-0 left-0 w-full h-full bg-black/10 z-1"></div>
           <p className="font-mono text-sm sm:text-base text-accent-cyan/90 leading-relaxed italic">
             <span className="text-white/40">{">"}</span> Accessing hackathon_v02.exe...<br />
             <span className="text-white/40">{">"}</span> Not a hackathon. An overnight build odyssey.<br />
             <span className="text-white/40">{">"}</span> No problem statements. Only pure imagination.
           </p>
-        </div>
+        </motion.div>
+
         
         {/* Primary Call to Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center">
@@ -121,7 +125,7 @@ const Hero = () => {
         </div>
 
         {/* Global Metadata Tracker */}
-        <div className="mt-24 flex justify-center gap-10 md:gap-16 font-mono text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em]">
+        <div className="mt-24 mb-2 flex justify-center gap-10 md:gap-16 font-mono text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em]">
           <div className="space-y-2"> <p className="text-accent-pink">01</p> <p>all_night.log</p> </div>
           <div className="space-y-2"> <p className="text-accent-cyan">02</p> <p>zero_limits.sys</p> </div>
           <div className="space-y-2"> <p className="text-white/60">03</p> <p>build_fest.pkg</p> </div>
