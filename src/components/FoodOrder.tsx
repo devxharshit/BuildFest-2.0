@@ -1,162 +1,156 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
+import { ShoppingCart, Trash2, Plus, Minus, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
-import { Utensils, Zap, Coffee, Droplet } from "lucide-react";
 
-interface MenuItem {
-  id: string;
-  name: string;
-  description: string;
-  category: "snack" | "drink" | "meal";
-  icon: React.ReactNode;
-}
-
-const menuItems: MenuItem[] = [
-  { id: "coffee", name: "COFFEE", description: "SYSTEM_FUEL_HOT", category: "drink", icon: <Coffee className="w-5 h-5" /> },
-  { id: "energy", name: "ENERGY_DRINK", description: "OVERCLOCK_MODE", category: "drink", icon: <Zap className="w-5 h-5" /> },
-  { id: "water", name: "H2O_LIQUID", description: "STABLE_HYDRATION", category: "drink", icon: <Droplet className="w-5 h-5" /> },
-  { id: "pizza", name: "PIZZA_SLICE", description: "SECTOR_A_FUEL", category: "meal", icon: "🍕" },
-  { id: "noodles", name: "NOODLE_PACK", description: "CORE_PROCESS_MEAL", category: "meal", icon: "🍜" },
-  { id: "chips", name: "CRUNCH_DATA", description: "PACKET_SNACK", category: "snack", icon: "🥔" },
+const menuItems = [
+  { id: "coffee", name: "Hot Coffee", price: "Free", description: "Freshly brewed system fuel.", category: "Drinks", image: "☕" },
+  { id: "energy", name: "Energy Drink", price: "Free", description: "High-caffeine overclocking.", category: "Drinks", image: "⚡" },
+  { id: "pizza", name: "Pizza Slice", price: "Free", description: "Classic pepperoni or veggie.", category: "Meals", image: "🍕" },
+  { id: "noodles", name: "Ramen Cup", price: "Free", description: "The developer's late-night choice.", category: "Meals", image: "🍜" },
+  { id: "chips", name: "Potato Chips", price: "Free", description: "Crunchy salted snacks.", category: "Snacks", image: "🥔" },
+  { id: "water", name: "Mineral Water", price: "Free", description: "Pure hydration.", category: "Drinks", image: "💧" },
 ];
 
 const FoodOrder = () => {
+  const [cart, setCart] = useState([]);
   const [teamName, setTeamName] = useState("");
   const [tableNumber, setTableNumber] = useState("");
-  const [selectedItems, setSelectedItems] = useState<string[]>([]);
-  const [specialRequests, setSpecialRequests] = useState("");
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const { toast } = useToast();
 
-  const toggleItem = (itemId: string) => {
-    setSelectedItems(prev => 
-      prev.includes(itemId) 
-        ? prev.filter(id => id !== itemId) 
-        : [...prev, itemId]
+  const addToCart = (item) => {
+    setCart((prev) => {
+      const existing = prev.find((i) => i.id === item.id);
+      if (existing) {
+        return prev.map((i) => (i.id === item.id ? { ...i, qty: i.qty + 1 } : i));
+      }
+      return [...prev, { ...item, qty: 1 }];
+    });
+  };
+
+  const removeFromCart = (id) => {
+    setCart((prev) => prev.filter((i) => i.id !== id));
+  };
+
+  const updateQty = (id, delta) => {
+    setCart((prev) =>
+      prev.map((i) => (i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i))
     );
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
+
+  const handleCheckout = (e) => {
     e.preventDefault();
-    if (!teamName || !tableNumber || selectedItems.length === 0) {
-      toast({
-        title: "AUTH_ERROR",
-        description: "Missing Team_ID, Table_Loc, or Payload_Items.",
-        variant: "destructive",
-      });
+    if (!teamName || !tableNumber || cart.length === 0) {
+      toast({ title: "Order Incomplete", description: "Add items and delivery info.", variant: "destructive" });
       return;
     }
-    setIsSubmitting(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    toast({
-      title: "ORDER_DEPLOYED",
-      description: "Fuel is in transit to your coordinates.",
-    });
-    setTeamName(""); setTableNumber(""); setSelectedItems([]); setSpecialRequests(""); setIsSubmitting(false);
+    toast({ title: "Order Placed!", description: "Delivery estimated in 15 mins." });
+    setCart([]); setTeamName(""); setTableNumber("");
   };
 
-  const categories = [
-    { key: "drink", label: "01_LIQUIDS", items: menuItems.filter(i => i.category === "drink") },
-    { key: "meal", label: "02_SOLID_FUEL", items: menuItems.filter(i => i.category === "meal") },
-    { key: "snack", label: "03_SNACK_PACKETS", items: menuItems.filter(i => i.category === "snack") },
-  ];
-
   return (
-    <section className="max-w-4xl mx-auto px-6 font-mono text-sm">
-      <form onSubmit={handleSubmit} className="space-y-12">
-        
-        {/* TEAM & LOCATION DATA */}
-        <div className="grid sm:grid-cols-2 gap-8">
-          <div className="space-y-2">
-            <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Team_Identifier</Label>
-            <Input
-              value={teamName}
-              onChange={(e) => setTeamName(e.target.value)}
-              placeholder="ENTER_TEAM_ID"
-              className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20 focus:border-accent-cyan"
-            />
+    <div className="flex flex-col lg:flex-row gap-8 max-w-7xl mx-auto px-6 py-8">
+      
+      {/* LEFT: MENU SECTION */}
+      <div className="flex-1 space-y-12">
+        <header className="border-b border-white/10 pb-6">
+          <h1 className="text-4xl font-bold text-white tracking-tight mb-2">BuildFest Cafeteria</h1>
+          <div className="flex items-center gap-4 text-accent-cyan text-sm font-mono">
+            <span className="flex items-center gap-1"><Clock className="w-4 h-4" /> 15 MIN DELIVERY</span>
+            <span className="text-white/20">|</span>
+            <span>OPEN 24/7 FOR BUILDERS</span>
           </div>
-          <div className="space-y-2">
-            <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Table_Coordinates</Label>
-            <Input
-              value={tableNumber}
-              onChange={(e) => setTableNumber(e.target.value)}
-              placeholder="TABLE_05_ZONE_B"
-              className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20 focus:border-accent-cyan"
-            />
-          </div>
-        </div>
+        </header>
 
-        {/* MENU CATEGORIES */}
-        {categories.map(({ key, label, items }) => (
-          <div key={key} className="space-y-6">
-            <div className="flex items-center gap-4 border-b border-white/5 pb-2">
-              <h3 className="text-xs font-bold text-white tracking-[0.4em] uppercase italic">
-                {label}
-              </h3>
-            </div>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-              {items.map((item) => (
-                <div
-                  key={item.id}
-                  onClick={() => toggleItem(item.id)}
-                  className={`
-                    relative p-4 border transition-all cursor-pointer flex items-center gap-4
-                    ${selectedItems.includes(item.id) 
-                      ? 'border-accent-cyan bg-accent-cyan/10 shadow-[0_0_15px_rgba(0,242,255,0.1)]' 
-                      : 'border-white/10 bg-[#0a0f1e] hover:border-accent-cyan/40'}
-                  `}
-                >
-                  <div className={`text-2xl ${selectedItems.includes(item.id) ? 'text-accent-cyan' : 'text-white/40'}`}>
-                    {item.icon}
+        {["Drinks", "Meals", "Snacks"].map((cat) => (
+          <section key={cat} className="space-y-6">
+            <h2 className="text-xl font-bold text-white uppercase tracking-widest border-l-4 border-accent-cyan pl-4">{cat}</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {menuItems.filter(i => i.category === cat).map((item) => (
+                <div key={item.id} className="bg-[#0a0f1e] border border-white/5 p-4 flex gap-4 hover:border-accent-cyan/30 transition-all group">
+                  <div className="w-20 h-20 bg-black/40 flex items-center justify-center text-4xl rounded-lg">
+                    {item.image}
                   </div>
                   <div className="flex-1">
-                    <p className={`text-xs font-bold ${selectedItems.includes(item.id) ? 'text-accent-cyan' : 'text-white/80'}`}>
-                      {item.name}
-                    </p>
-                    <p className="text-[10px] text-white/30 tracking-tight mt-0.5">{item.description}</p>
+                    <div className="flex justify-between items-start">
+                      <h3 className="font-bold text-white">{item.name}</h3>
+                      <span className="text-accent-cyan font-mono text-xs">{item.price}</span>
+                    </div>
+                    <p className="text-sm text-white/40 mt-1 line-clamp-2">{item.description}</p>
+                    <button 
+                      onClick={() => addToCart(item)}
+                      className="mt-3 text-[10px] font-bold uppercase tracking-tighter text-accent-cyan flex items-center gap-1 hover:underline"
+                    >
+                      <Plus className="w-3 h-3" /> Add to Order
+                    </button>
                   </div>
-                  {selectedItems.includes(item.id) && (
-                    <div className="w-1.5 h-1.5 bg-accent-cyan animate-pulse" />
-                  )}
                 </div>
               ))}
             </div>
-          </div>
+          </section>
         ))}
+      </div>
 
-        {/* SPECIAL REQUESTS */}
-        <div className="space-y-2">
-          <Label className="text-[10px] uppercase tracking-[0.3em] text-accent-cyan/60 ml-1">Dietary_Exceptions</Label>
-          <Input
-            value={specialRequests}
-            onChange={(e) => setSpecialRequests(e.target.value)}
-            placeholder="NULL // NONE"
-            className="bg-black/40 border-accent-cyan/30 text-accent-cyan rounded-none h-12 placeholder:text-accent-cyan/20"
-          />
-        </div>
+      {/* RIGHT: CART SIDEBAR */}
+      <aside className="w-full lg:w-96">
+        <div className="bg-[#0a0f1e] border border-accent-cyan/20 p-6 sticky top-24">
+          <div className="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
+            <h2 className="text-lg font-bold text-white flex items-center gap-2">
+              <ShoppingCart className="w-5 h-5 text-accent-cyan" /> YOUR CART
+            </h2>
+            <Badge variant="outline" className="border-accent-cyan text-accent-cyan">{totalItems} ITEMS</Badge>
+          </div>
 
-        {/* SUBMIT PROTOCOL */}
-        <div className="flex flex-col items-center gap-6 pt-4">
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full sm:w-auto px-16 h-14 bg-accent-cyan text-[#020617] font-bold uppercase italic skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-[1.02] disabled:opacity-50"
-          >
-            <span className="skew-x-[12deg] flex items-center gap-3">
-              {isSubmitting ? "TRANSMITTING..." : `REQUEST_FUEL_${selectedItems.length}_UNITS`}
-            </span>
-          </button>
-          <p className="text-[10px] tracking-widest text-white/20 uppercase">
-            Estimated_ETA: 10_to_15_Minutes
-          </p>
+          {cart.length === 0 ? (
+            <div className="text-center py-12 text-white/20 italic text-sm">
+              Your cart is empty.<br/>Select fuel to continue.
+            </div>
+          ) : (
+            <div className="space-y-6">
+              <div className="max-h-[300px] overflow-y-auto space-y-4 pr-2 custom-scrollbar">
+                {cart.map((item) => (
+                  <div key={item.id} className="flex items-center justify-between group">
+                    <div>
+                      <p className="text-sm font-bold text-white">{item.name}</p>
+                      <div className="flex items-center gap-3 mt-1">
+                        <button onClick={() => updateQty(item.id, -1)} className="text-white/40 hover:text-white"><Minus className="w-3 h-3"/></button>
+                        <span className="text-xs font-mono text-accent-cyan">{item.qty}</span>
+                        <button onClick={() => updateQty(item.id, 1)} className="text-white/40 hover:text-white"><Plus className="w-3 h-3"/></button>
+                      </div>
+                    </div>
+                    <button onClick={() => removeFromCart(item.id)} className="opacity-0 group-hover:opacity-100 text-red-500/50 hover:text-red-500 transition-all">
+                      <Trash2 className="w-4 h-4" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+
+              <form onSubmit={handleCheckout} className="space-y-4 pt-6 border-t border-white/10">
+                <Input 
+                  placeholder="Team Name" 
+                  value={teamName}
+                  onChange={(e) => setTeamName(e.target.value)}
+                  className="bg-black/40 border-white/10 text-white rounded-none"
+                />
+                <Input 
+                  placeholder="Table / Room Number" 
+                  value={tableNumber}
+                  onChange={(e) => setTableNumber(e.target.value)}
+                  className="bg-black/40 border-white/10 text-white rounded-none"
+                />
+                <Button className="w-full bg-accent-cyan text-black font-bold uppercase tracking-widest h-12 hover:bg-white transition-colors rounded-none">
+                  PLACE ORDER
+                </Button>
+              </form>
+            </div>
+          )}
         </div>
-      </form>
-    </section>
+      </aside>
+    </div>
   );
 };
 
