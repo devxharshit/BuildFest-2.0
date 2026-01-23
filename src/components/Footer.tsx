@@ -5,10 +5,9 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    /* Removed large mt-12 to close the gap with the landing page */
     <footer className="w-full bg-[#020617] border-t border-white/10 pt-12 pb-8 font-mono relative overflow-hidden">
       
-      {/* Subtle scanline effect for a professional terminal feel */}
+      {/* Subtle scanline effect for terminal feel */}
       <div className="absolute inset-0 pointer-events-none opacity-[0.03] bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%),linear-gradient(90deg,rgba(255,0,0,0.06),rgba(0,255,0,0.02),rgba(0,0,255,0.06))] bg-[length:100%_2px,3px_100%]" />
 
       <div className="max-w-7xl mx-auto px-8 lg:px-16 relative z-10">
@@ -18,7 +17,7 @@ const Footer = () => {
           <div className="lg:col-span-1 space-y-4">
             <div>
               <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase leading-none">
-                BuildFest <span className="text-accent-cyan text-glow-cyan">2.0</span>
+                BuildFest <span className="text-accent-cyan">2.0</span>
               </h2>
               <p className="text-[10px] text-accent-cyan font-bold tracking-[0.3em] uppercase mt-2">
                 Cyber Space Club
@@ -116,15 +115,15 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* COLUMN 5: INCREASED SIZE LOGO */}
+          {/* COLUMN 5: CSC1 ASTRONAUT LOGO */}
           <div className="hidden lg:flex justify-end items-center h-full">
             <div className="relative group">
-              {/* Intentional glowing backlight for the large logo */}
-              <div className="absolute inset-0 bg-orange-600/10 blur-[60px] rounded-full opacity-60 group-hover:opacity-90 transition-opacity" />
+              {/* Backlight glow adjusted for the astronaut silhouette */}
+              <div className="absolute inset-0 bg-white/5 blur-[50px] rounded-full opacity-40 group-hover:opacity-60 transition-opacity" />
               <img 
-                src="/CSC LOGO (1)-1.png" 
-                alt="Cyber Space Official" 
-                className="h-32 w-auto object-contain brightness-125 transition-transform duration-700 group-hover:scale-110 drop-shadow-[0_0_20px_rgba(249,115,22,0.4)]" 
+                src="/CSC1.png" 
+                alt="Cyber Space Astronaut" 
+                className="h-40 w-auto object-contain brightness-110 contrast-125 transition-all duration-700 group-hover:scale-105 drop-shadow-[0_0_15px_rgba(255,255,255,0.2)]" 
               />
             </div>
           </div>
