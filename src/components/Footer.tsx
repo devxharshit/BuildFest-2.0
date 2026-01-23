@@ -42,7 +42,7 @@ const Footer = () => {
                   <Phone className="w-3.5 h-3.5" />
                   <div className="flex flex-col leading-none">
                     <span className="text-[9px] text-white/30 uppercase font-bold">Kuber Chhabra</span>
-                    <span className="text-xs font-black tracking-tighter">+917310937659</span>
+                    <span className="text-xs font-black tracking-tighter">+91 73109 37659</span>
                   </div>
                 </a>
               </li>
@@ -51,7 +51,7 @@ const Footer = () => {
                   <Phone className="w-3.5 h-3.5" />
                   <div className="flex flex-col leading-none">
                     <span className="text-[9px] text-white/30 uppercase font-bold">Ganesh Kotwade</span>
-                    <span className="text-xs font-black tracking-tighter">+919373842949</span>
+                    <span className="text-xs font-black tracking-tighter">+91 93738 42949</span>
                   </div>
                 </a>
               </li>
