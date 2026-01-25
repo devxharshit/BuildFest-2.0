@@ -1,2 +1,9 @@
-VITE_SUPABASE_URL= wrvdtlblkbeuwcwbnkyh
-VITE_SUPABASE_ANON_KEY= sb_publishable_nXod0TlsD5FfXcLV7SB8FA_Y0bcQE_T
+
+import { createClient } from '@supabase/supabase-js';
+
+// These lines pull the secret keys from your .env file safely
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+// This creates the actual connection "client"
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
