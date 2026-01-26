@@ -55,32 +55,31 @@ const DareBox = () => {
   };
 
   // 3. BACKEND CONNECTION LOGIC
-  const handleAcceptAssignment = async () => {
-    if (!currentDare || !teamName) return;
-    
-    setIsSyncing(true);
-    
-    try {
-      const { error } = await supabase
-        .from('team_dares') // Table must be named 'team_dares' in Supabase
-        .insert([
-          { 
-            team_name: teamName, 
-            allotted_dare: currentDare.text 
-          }
-        ]);
 
-      if (error) throw error;
+const handleAcceptAssignment = async () => {
+  if (!currentDare || !teamName) return;
 
-      setIsLocked(true);
-      toast.success("SYSTEM_SECURED: Dare logged to BF_OS database.");
-    } catch (error: any) {
-      toast.error("SYNC_ERROR: " + error.message);
-      console.error(error);
-    } finally {
-      setIsSyncing(false);
-    }
-  };
+  // 1. Send the 'Envelope' to Supabase
+  const { error } = await supabase
+    .from('team_dares') // Must be the exact table name from Step 1
+    .insert([
+      { 
+        team_name: teamName,        // Matches 'team_name' column
+        allotted_dare: currentDare.text // Matches 'allotted_dare' column
+      }
+    ]);
+
+  if (error) {
+    // If the 'Security Gate' in Step 2 is closed, you will see an error here
+    console.error("Transmission Error:", error.message);
+    alert("SYSTEM_SYNC_FAILED: Check your internet or DB permissions.");
+  } else {
+    // 2. Only lock the UI if the database successfully saved the data
+    setIsLocked(true);
+    console.log("SUCCESS: Dare logged to BF_OS.");
+  }
+};
+
 
   return (
     <div className="container mx-auto px-6 py-12">
