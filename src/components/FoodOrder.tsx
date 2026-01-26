@@ -57,12 +57,36 @@ const FoodOrder = () => {
 
   const removeFromCart = (id) => setCart((prev) => prev.filter((i) => i.id !== id));
 
-  const handleFileChange = (e) => {
-    if (e.target.files?.[0]) {
-      setScreenshot(e.target.files[0]);
-      toast({ title: "DATA_LINKED", description: "Payment proof attached to payload." });
+  
+const handleCheckout = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  // Use the supabase client you imported from @supabase/supabase-js
+  const { error } = await supabase
+    .from('food_orders')
+    .insert([
+      { 
+        team_name: teamName,
+        table_number: tableNumber,
+        utr_id: utrId,
+        -- This saves the entire cart (all items, quantities, and prices)
+        order_manifest: cart, 
+        total_price: totalPrice
+      }
+    ]);
+
+  if (error) {
+    if (error.code === '23505') {
+      toast({ title: "DUPLICATE_UTR", description: "This payment has already been logged.", variant: "destructive" });
+    } else {
+      toast({ title: "TRANSMISSION_ERROR", description: error.message, variant: "destructive" });
     }
-  };
+  } else {
+    toast({ title: "FUEL_LOCKED", description: "Your order is in the system!" });
+    setCart([]); // Clear cart after success
+  }
+};
+
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const upiId = "harshitindia2005@okicici";
