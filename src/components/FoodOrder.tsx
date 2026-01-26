@@ -58,10 +58,17 @@ const FoodOrder = () => {
   const removeFromCart = (id) => setCart((prev) => prev.filter((i) => i.id !== id));
 
   
+
 const handleCheckout = async (e: React.FormEvent) => {
   e.preventDefault();
   
-  // Use the supabase client you imported from @supabase/supabase-js
+  // Validation check
+  if (!teamName || !tableNumber || !utrId || cart.length === 0) {
+    toast({ title: "INVALID_SEQUENCE", description: "Missing required data nodes.", variant: "destructive" });
+    return;
+  }
+
+  // Database transmission
   const { error } = await supabase
     .from('food_orders')
     .insert([
@@ -69,7 +76,6 @@ const handleCheckout = async (e: React.FormEvent) => {
         team_name: teamName,
         table_number: tableNumber,
         utr_id: utrId,
-        -- This saves the entire cart (all items, quantities, and prices)
         order_manifest: cart, 
         total_price: totalPrice
       }
@@ -83,9 +89,15 @@ const handleCheckout = async (e: React.FormEvent) => {
     }
   } else {
     toast({ title: "FUEL_LOCKED", description: "Your order is in the system!" });
-    setCart([]); // Clear cart after success
+    // Clear state after success
+    setCart([]);
+    setTeamName("");
+    setTableNumber("");
+    setUtrId("");
+    setScreenshot(null);
   }
 };
+
 
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
