@@ -31,7 +31,7 @@ const FoodOrder = () => {
       const hour = now.getHours();
       const min = now.getMinutes();
       // Adjust this window as per your local testing needs
-      const isWindowOpen = (hour === 23 && min >= 1 && min < 59); 
+      const isWindowOpen = (hour === 0 && min >= 1 && min < 59); 
       setIsOpen(isWindowOpen);
     };
     const timer = setInterval(checkTime, 1000);

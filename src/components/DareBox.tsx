@@ -72,7 +72,7 @@ const handleAcceptAssignment = async () => {
   if (error) {
     // If the 'Security Gate' in Step 2 is closed, you will see an error here
     console.error("Transmission Error:", error.message);
-    alert("SYSTEM_SYNC_FAILED: Check your internet or DB permissions.");
+    alert("You've been alloted a dare already.");
   } else {
     // 2. Only lock the UI if the database successfully saved the data
     setIsLocked(true);
