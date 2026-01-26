@@ -1,9 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Check, ArrowRight, User } from "lucide-react";
-import { motion } from "framer-motion";
+import { Check, ArrowRight, User, Loader2 } from "lucide-react";
+import { supabase } from "@/lib/supabaseClient"; // 1. IMPORT SUPABASE
+import { toast } from "sonner"; // 2. IMPORT TOAST FOR FEEDBACK
 
 const prompts = [
   "The Invisible Thread",
@@ -15,17 +17,43 @@ const prompts = [
 
 const Submit = () => {
   const [submitted, setSubmitted] = useState(false);
+  const [loading, setLoading] = useState(false); // 3. ADD LOADING STATE
   const [formData, setFormData] = useState({
     teamName: "",
     projectName: "",
     promptChosen: "",
-    demoLink: "",
+    demoLink: "", // This will be sent to linkedin_link in DB
     reflection: "",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // 4. UPDATED SUBMIT LOGIC
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setLoading(true);
+
+    try {
+      const { error } = await supabase
+        .from('submissions') // Ensure table name is exactly 'submissions'
+        .insert([
+          {
+            team_name: formData.teamName,
+            project_name: formData.projectName,
+            linkedin_link: formData.demoLink, // Sending URL to the LinkedIn column
+            prompt_chosen: formData.promptChosen,
+            reflection: formData.reflection,
+          }
+        ]);
+
+      if (error) throw error;
+
+      setSubmitted(true);
+      toast.success("DATA_UPLOAD_SUCCESSFUL");
+    } catch (error: any) {
+      toast.error("TRANSMISSION_FAILED: " + error.message);
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
@@ -50,7 +78,6 @@ const Submit = () => {
 
   return (
     <div className="max-w-2xl mx-auto">
-      {/* Identify Team Header - Matches Reference Image */}
       <div className="flex flex-col items-center mb-12">
         <User className="w-12 h-12 text-accent-cyan mb-4 opacity-80" />
         <h3 className="font-mono text-lg font-bold tracking-[0.4em] text-white uppercase italic">
@@ -60,7 +87,6 @@ const Submit = () => {
 
       <form onSubmit={handleSubmit} className="space-y-8">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Team Name */}
           <div className="space-y-2">
             <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
               01_Team_ID
@@ -71,10 +97,10 @@ const Submit = () => {
               onChange={(e) => handleChange("teamName", e.target.value)}
               className="h-12 bg-black/40 border-accent-cyan/30 text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm transition-all"
               required
+              disabled={loading}
             />
           </div>
 
-          {/* Project Name */}
           <div className="space-y-2">
             <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
               02_Project_Title
@@ -85,11 +111,11 @@ const Submit = () => {
               onChange={(e) => handleChange("projectName", e.target.value)}
               className="h-12 bg-black/40 border-accent-cyan/30 text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm transition-all"
               required
+              disabled={loading}
             />
           </div>
         </div>
 
-        {/* Prompt Selection */}
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
             03_Selected_Challenge
@@ -99,6 +125,7 @@ const Submit = () => {
             onChange={(e) => handleChange("promptChosen", e.target.value)}
             className="w-full h-12 px-4 bg-black/40 border border-accent-cyan/30 text-accent-cyan focus:border-accent-cyan focus:outline-none focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm transition-all appearance-none cursor-pointer"
             required
+            disabled={loading}
           >
             <option value="" className="bg-[#0a0f1e]">SELECT_PROMPT</option>
             {prompts.map((prompt) => (
@@ -109,22 +136,21 @@ const Submit = () => {
           </select>
         </div>
 
-        {/* Demo Link */}
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
             04_Payload_URL
           </label>
           <Input
-            placeholder="HTTPS://DEPLOYMENT_LINK.EXE"
+            placeholder="HTTPS://LINKEDIN_OR_DEMO_URL"
             type="url"
             value={formData.demoLink}
             onChange={(e) => handleChange("demoLink", e.target.value)}
             className="h-12 bg-black/40 border-accent-cyan/30 text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm transition-all"
             required
+            disabled={loading}
           />
         </div>
 
-        {/* Reflection */}
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
             05_Post_Mortem_Logs (Optional)
@@ -134,16 +160,21 @@ const Submit = () => {
             value={formData.reflection}
             onChange={(e) => handleChange("reflection", e.target.value)}
             className="min-h-[120px] bg-black/40 border-accent-cyan/30 text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm resize-none transition-all"
+            disabled={loading}
           />
         </div>
 
-        {/* Submit Button Styled like your Nav bar CTA */}
         <button
           type="submit"
-          className="w-full h-14 bg-accent-cyan text-[#020617] font-bold font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-[1.02] shadow-[5px_5px_0px_rgba(0,242,255,0.2)] flex items-center justify-center gap-3"
+          disabled={loading}
+          className="w-full h-14 bg-accent-cyan text-[#020617] font-bold font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-[1.02] shadow-[5px_5px_0px_rgba(0,242,255,0.2)] flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed"
         >
           <span className="skew-x-[12deg] flex items-center gap-2">
-            Execute_Submission <ArrowRight className="w-4 h-4" />
+            {loading ? (
+              <>TRANSMITTING... <Loader2 className="w-4 h-4 animate-spin" /></>
+            ) : (
+              <>Execute_Submission <ArrowRight className="w-4 h-4" /></>
+            )}
           </span>
         </button>
       </form>
