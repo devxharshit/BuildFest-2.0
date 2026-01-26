@@ -108,15 +108,7 @@ const handleCheckout = async (e: React.FormEvent) => {
   const upiId = "harshitindia2005@okicici";
   const upiLink = `upi://pay?pa=${upiId}&pn=Harshit+Raj+Singh&am=${totalPrice}&cu=INR&tn=BuildFest_Order_${teamName}`;
 
-  const handleCheckout = (e) => {
-    e.preventDefault();
-    if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
-      toast({ title: "INVALID_SEQUENCE", description: "Missing required data nodes.", variant: "destructive" });
-      return;
-    }
-    toast({ title: "PAYLOAD_SENT", description: "Order logged. Checking transaction status..." });
-    setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
-  };
+  
 
   if (!isOpen) {
     return (
