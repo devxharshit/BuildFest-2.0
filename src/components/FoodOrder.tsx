@@ -58,6 +58,16 @@ const FoodOrder = () => {
 
   const removeFromCart = (id) => setCart((prev) => prev.filter((i) => i.id !== id));
 
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  if (e.target.files?.[0]) {
+    setScreenshot(e.target.files[0]);
+    toast({ 
+      title: "DATA_LINKED", 
+      description: "Payment proof attached to payload." 
+    });
+  }
+};
+
   
 
 
