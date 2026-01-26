@@ -1,7 +1,11 @@
+
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Lock, RotateCcw, ShieldAlert, Terminal, User } from "lucide-react";
-import { motion, AnimatePresence } from "framer-motion";
+import { Lock, ShieldAlert, Terminal, User, Loader2 } from "lucide-react";
+import { motion } from "framer-motion";
+// 1. IMPORT SUPABASE CLIENT
+import { supabase } from "@/lib/supabaseClient";
+import { toast } from "sonner";
 
 const dares = [
   { id: 1, text: "Build the entire thing without any words on screen." },
@@ -22,8 +26,9 @@ const DareBox = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
+  const [isSyncing, setIsSyncing] = useState(false); // 2. STATE FOR BACKEND SYNC
 
-  const handleAuth = (e) => {
+  const handleAuth = (e: React.FormEvent) => {
     e.preventDefault();
     if (teamName.trim().length > 2) setIsAuth(true);
   };
@@ -33,7 +38,7 @@ const DareBox = () => {
     
     setIsRevealing(true);
     setIsOpen(true);
-    setHasGenerated(true); // Disable further shuffles immediately
+    setHasGenerated(true); 
     
     let iterations = 0;
     const maxIterations = 15;
@@ -49,6 +54,33 @@ const DareBox = () => {
     }, 80);
   };
 
+  // 3. BACKEND CONNECTION LOGIC
+
+const handleAcceptAssignment = async () => {
+  if (!currentDare || !teamName) return;
+
+  // 1. Send the 'Envelope' to Supabase
+  const { error } = await supabase
+    .from('team_dares') // Must be the exact table name from Step 1
+    .insert([
+      { 
+        team_name: teamName,        // Matches 'team_name' column
+        allotted_dare: currentDare.text // Matches 'allotted_dare' column
+      }
+    ]);
+
+  if (error) {
+    // If the 'Security Gate' in Step 2 is closed, you will see an error here
+    console.error("Transmission Error:", error.message);
+    alert("SYSTEM_SYNC_FAILED: Check your internet or DB permissions.");
+  } else {
+    // 2. Only lock the UI if the database successfully saved the data
+    setIsLocked(true);
+    console.log("SUCCESS: Dare logged to BF_OS.");
+  }
+};
+
+
   return (
     <div className="container mx-auto px-6 py-12">
       <div className="max-w-2xl mx-auto">
@@ -62,7 +94,6 @@ const DareBox = () => {
 
           <div className="p-8 md:p-12 text-center">
             {!isAuth ? (
-              /* Phase 1: Team Identification */
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="space-y-6">
                 <div className="flex justify-center mb-4">
                   <User className="w-10 h-10 text-accent-cyan opacity-50" />
@@ -83,7 +114,6 @@ const DareBox = () => {
                 </form>
               </motion.div>
             ) : !isOpen ? (
-              /* Phase 2: Ready to Roll */
               <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
                 <Terminal className="w-10 h-10 text-accent-cyan mx-auto mb-6 opacity-40" />
                 <h2 className="text-xl font-bold text-white mb-2 uppercase italic tracking-tighter">
@@ -100,11 +130,14 @@ const DareBox = () => {
                 </Button>
               </motion.div>
             ) : (
-              /* Phase 3: The Result */
-              <div className="font-mono">
+              <div className="font-mono text-left md:text-center">
                 <div className="flex justify-between items-center mb-8 border-b border-white/10 pb-4">
-                  <span className="text-[10px] text-accent-cyan uppercase">{teamName} // {isLocked ? "LOCKED" : "ASSIGNED"}</span>
-                  <span className="text-[10px] text-muted-foreground opacity-40">HASH_{teamName.slice(0,3).toUpperCase()}</span>
+                  <span className="text-[10px] text-accent-cyan uppercase">
+                    {teamName} // {isLocked ? "LOCKED" : "ASSIGNED"}
+                  </span>
+                  <span className="text-[10px] text-muted-foreground opacity-40 uppercase">
+                    HASH_{teamName.slice(0,3)}
+                  </span>
                 </div>
 
                 <div className={`mb-10 min-h-[100px] flex items-center justify-center transition-all ${isRevealing ? "opacity-50" : "opacity-100"}`}>
@@ -116,12 +149,16 @@ const DareBox = () => {
                 {!isLocked ? (
                   <div className="flex flex-col items-center gap-4">
                     <button
-                      onClick={() => setIsLocked(true)}
-                      disabled={isRevealing}
+                      onClick={handleAcceptAssignment} // 4. LINKED TO BACKEND FUNCTION
+                      disabled={isRevealing || isSyncing}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-3 bg-accent-cyan/20 border border-accent-cyan text-accent-cyan text-xs font-bold uppercase hover:bg-accent-cyan hover:text-black transition-all disabled:opacity-30"
                     >
-                      <Lock className="w-3 h-3" />
-                      Accept_Dare_Assignment
+                      {isSyncing ? (
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                      ) : (
+                        <Lock className="w-3 h-3" />
+                      )}
+                      {isSyncing ? "SYNCING_TO_DATABASE..." : "Accept_Dare_Assignment"}
                     </button>
                     <p className="text-[9px] text-red-500/60 uppercase tracking-widest">
                       ! Reshuffle sequence prohibited for this team ID
@@ -139,7 +176,6 @@ const DareBox = () => {
             )}
           </div>
 
-          {/* Animated Scan Line (Active during reveal) */}
           {isOpen && !isLocked && (
             <motion.div 
               initial={{ top: -10 }} animate={{ top: "100%" }}
