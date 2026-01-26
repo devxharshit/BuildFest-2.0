@@ -59,16 +59,19 @@ const FoodOrder = () => {
 
   
 
+
 const handleCheckout = async (e: React.FormEvent) => {
   e.preventDefault();
   
-  // Validation check
   if (!teamName || !tableNumber || !utrId || cart.length === 0) {
-    toast({ title: "INVALID_SEQUENCE", description: "Missing required data nodes.", variant: "destructive" });
+    toast({ 
+      title: "INVALID_SEQUENCE", 
+      description: "Missing required data nodes.", 
+      variant: "destructive" 
+    });
     return;
   }
 
-  // Database transmission
   const { error } = await supabase
     .from('food_orders')
     .insert([
@@ -89,7 +92,7 @@ const handleCheckout = async (e: React.FormEvent) => {
     }
   } else {
     toast({ title: "FUEL_LOCKED", description: "Your order is in the system!" });
-    // Clear state after success
+    // Reset all fields
     setCart([]);
     setTeamName("");
     setTableNumber("");
