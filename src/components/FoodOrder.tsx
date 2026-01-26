@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { ShoppingCart, Trash2, Plus, Minus, Clock, Lock, Upload, FileCheck, ShieldCheck, Terminal } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from 'qrcode.react';
+import { supabase } from "@/lib/supabaseClient";
 
 const menuItems = [
   { id: "coffee", name: "Hot Coffee", price: 40, description: "System fuel: caffeine(80mg)", category: "Drinks", image: "☕" },
