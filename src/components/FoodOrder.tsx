@@ -88,7 +88,7 @@ const handleCheckout = async (e: React.FormEvent) => {
     formData.append("upload_preset", "YOUR_UNSIGNED_PRESET"); // Replace this!
 
     const cloudinaryResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload`, // Replace YOUR_CLOUD_NAME
+      `https://api.cloudinary.com/v1_1/s5dpknbv/image/upload`, // Replace YOUR_CLOUD_NAME
       { method: "POST", body: formData }
     );
     
