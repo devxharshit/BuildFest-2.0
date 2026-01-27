@@ -1,21 +1,22 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Lock, ShieldAlert, Terminal, User, Loader2 } from "lucide-react";
 import { motion } from "framer-motion";
-// 1. IMPORT SUPABASE CLIENT
 import { supabase } from "@/lib/supabaseClient";
 import { toast } from "sonner";
 
+// UPDATED DARES LIST
 const dares = [
-  { id: 1, text: "Build the entire thing without any words on screen." },
-  { id: 2, text: "Your interface can only use one color. Choose wisely." },
-  { id: 3, text: "Nothing can be clicked. Only hovered, swiped, or held." },
-  { id: 4, text: "The experience must feel different at 3 AM than at 3 PM." },
-  { id: 5, text: "Include something that only works once—ever." },
-  { id: 6, text: "Your creation must generate a sound that never repeats." },
-  { id: 7, text: "Make something that requires two people to use at the same time." },
-  { id: 8, text: "The most important feature should be invisible at first glance." },
+  { id: 1, text: "Dark Mode Toggle: Implement a proper toggle that switches the entire theme. Readability must remain accessible." },
+  { id: 2, text: "Custom Loading State: Replace default loading with a custom spinner or micro-animation that communicates progress." },
+  { id: 3, text: "Emoji Interface: Replace selected text labels with emojis that communicate meaning clearly without harming accessibility." },
+  { id: 4, text: "Neon Glitch: Transform text into glowing cyan outlines that flicker on hover while remaining readable." },
+  { id: 5, text: "Gravity Shift: Animate content so it enters from the bottom as if gravity flipped. Motion must feel physical and smooth." },
+  { id: 6, text: "Floating Labels: Convert an input field to a floating label design where the label remains clear at all times." },
+  { id: 7, text: "Bouncing Icons: Add subtle bounce animations to icons on hover to attract attention without being distracting." },
+  { id: 8, text: "Language Switch: Translate the interface into another language (Hindi, French, or Spanish) with natural layouts." },
+  { id: 9, text: "Palette Shuffle + Project Rename: Change the color palette and rename the project using [Vegetable] + [Music Player]." },
+  { id: 10, text: "Feature Removal: Subtract one existing feature while making the product feel more complete and clear." },
 ];
 
 const DareBox = () => {
@@ -26,9 +27,9 @@ const DareBox = () => {
   const [isLocked, setIsLocked] = useState(false);
   const [isRevealing, setIsRevealing] = useState(false);
   const [hasGenerated, setHasGenerated] = useState(false);
-  const [isSyncing, setIsSyncing] = useState(false); // 2. STATE FOR BACKEND SYNC
+  const [isSyncing, setIsSyncing] = useState(false);
 
-  const handleAuth = (e: React.FormEvent) => {
+  const handleAuth = (e) => {
     e.preventDefault();
     if (teamName.trim().length > 2) setIsAuth(true);
   };
@@ -54,32 +55,31 @@ const DareBox = () => {
     }, 80);
   };
 
-  // 3. BACKEND CONNECTION LOGIC
+  const handleAcceptAssignment = async () => {
+    if (!currentDare || !teamName) return;
 
-const handleAcceptAssignment = async () => {
-  if (!currentDare || !teamName) return;
+    setIsSyncing(true); // Start loading state
+    
+    const { error } = await supabase
+      .from('team_dares')
+      .insert([
+        { 
+          team_name: teamName,
+          allotted_dare: currentDare.text 
+        }
+      ]);
 
-  // 1. Send the 'Envelope' to Supabase
-  const { error } = await supabase
-    .from('team_dares') // Must be the exact table name from Step 1
-    .insert([
-      { 
-        team_name: teamName,        // Matches 'team_name' column
-        allotted_dare: currentDare.text // Matches 'allotted_dare' column
-      }
-    ]);
+    setIsSyncing(false); // Stop loading state
 
-  if (error) {
-    // If the 'Security Gate' in Step 2 is closed, you will see an error here
-    console.error("Transmission Error:", error.message);
-    alert("You've been alloted a dare already.");
-  } else {
-    // 2. Only lock the UI if the database successfully saved the data
-    setIsLocked(true);
-    console.log("SUCCESS: Dare logged to BF_OS.");
-  }
-};
-
+    if (error) {
+      console.error("Transmission Error:", error.message);
+      toast.error("You've been allotted a dare already or connection failed.");
+    } else {
+      setIsLocked(true);
+      toast.success("SUCCESS: Dare logged to BF_OS.");
+      console.log("SUCCESS: Dare logged to BF_OS.");
+    }
+  };
 
   return (
     <div className="container mx-auto px-6 py-12">
@@ -149,7 +149,7 @@ const handleAcceptAssignment = async () => {
                 {!isLocked ? (
                   <div className="flex flex-col items-center gap-4">
                     <button
-                      onClick={handleAcceptAssignment} // 4. LINKED TO BACKEND FUNCTION
+                      onClick={handleAcceptAssignment}
                       disabled={isRevealing || isSyncing}
                       className="w-full sm:w-auto flex items-center justify-center gap-2 px-10 py-3 bg-accent-cyan/20 border border-accent-cyan text-accent-cyan text-xs font-bold uppercase hover:bg-accent-cyan hover:text-black transition-all disabled:opacity-30"
                     >
