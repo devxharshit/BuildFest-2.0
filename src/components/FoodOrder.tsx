@@ -85,10 +85,10 @@ const handleCheckout = async (e: React.FormEvent) => {
     // 2. Upload to Cloudinary via Fetch (Easiest for Hackathons)
     const formData = new FormData();
     formData.append("file", screenshot);
-    formData.append("upload_preset", "YOUR_UNSIGNED_PRESET"); // Replace this!
+    formData.append("upload_preset", "s5dpknbv"); // Replace this!
 
     const cloudinaryResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/s5dpknbv/image/upload`, // Replace YOUR_CLOUD_NAME
+      `https://api.cloudinary.com/v1_1/dle2azrsr/image/upload`, // Replace YOUR_CLOUD_NAME
       { method: "POST", body: formData }
     );
     
