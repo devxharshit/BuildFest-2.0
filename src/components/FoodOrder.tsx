@@ -71,46 +71,58 @@ const FoodOrder = () => {
   
 
 
+
 const handleCheckout = async (e: React.FormEvent) => {
   e.preventDefault();
   
-  if (!teamName || !tableNumber || !utrId || cart.length === 0) {
-    toast({ 
-      title: "INVALID_SEQUENCE", 
-      description: "Missing required data nodes.", 
-      variant: "destructive" 
-    });
+  // 1. Basic Validation
+  if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
+    toast({ title: "INVALID_SEQUENCE", description: "Missing data or screenshot.", variant: "destructive" });
     return;
   }
 
-  const { error } = await supabase
-    .from('food_orders')
-    .insert([
-      { 
-        team_name: teamName,
-        table_number: tableNumber,
-        utr_id: utrId,
-        order_manifest: cart, 
-        total_price: totalPrice
-      }
-    ]);
+  try {
+    // 2. Upload to Cloudinary via Fetch (Easiest for Hackathons)
+    const formData = new FormData();
+    formData.append("file", screenshot);
+    formData.append("upload_preset", "YOUR_UNSIGNED_PRESET"); // Replace this!
 
-  if (error) {
-    if (error.code === '23505') {
-      toast({ title: "DUPLICATE_UTR", description: "This payment has already been logged.", variant: "destructive" });
-    } else {
-      toast({ title: "TRANSMISSION_ERROR", description: error.message, variant: "destructive" });
-    }
-  } else {
-    toast({ title: "FUEL_LOCKED", description: "Your order is in the system!" });
-    // Reset all fields
-    setCart([]);
-    setTeamName("");
-    setTableNumber("");
-    setUtrId("");
-    setScreenshot(null);
+    const cloudinaryResponse = await fetch(
+      `https://api.cloudinary.com/v1_1/YOUR_CLOUD_NAME/image/upload`, // Replace YOUR_CLOUD_NAME
+      { method: "POST", body: formData }
+    );
+    
+    const cloudinaryData = await cloudinaryResponse.json();
+    const imageUrl = cloudinaryData.secure_url;
+
+    if (!imageUrl) throw new Error("Cloudinary upload failed");
+
+    // 3. Save everything to Supabase
+    const { error: dbError } = await supabase
+      .from('food_orders')
+      .insert([
+        { 
+          team_name: teamName,
+          table_number: tableNumber,
+          utr_id: utrId,
+          order_manifest: cart, 
+          total_price: totalPrice,
+          screenshot_url: imageUrl // This is the Cloudinary link
+        }
+      ]);
+
+    if (dbError) throw dbError;
+
+    // 4. Success Sequence
+    toast({ title: "FUEL_LOCKED", description: "Order logged with Cloudinary image!" });
+    setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
+
+  } catch (error: any) {
+    toast({ title: "SYSTEM_ERROR", description: error.message, variant: "destructive" });
+    console.error(error);
   }
 };
+
 
 
 
