@@ -1,7 +1,18 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { ShoppingCart, Trash2, Plus, Minus, Clock, Lock, Upload, FileCheck, ShieldCheck, Terminal } from "lucide-react";
+import { 
+  ShoppingCart, 
+  Trash2, 
+  Plus, 
+  Minus, 
+  Clock, 
+  Lock, 
+  Upload, 
+  FileCheck, 
+  Terminal, 
+  Loader2 
+} from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { QRCodeSVG } from 'qrcode.react';
 import { supabase } from "@/lib/supabaseClient";
@@ -16,22 +27,24 @@ const menuItems = [
 ];
 
 const FoodOrder = () => {
-  const [cart, setCart] = useState([]);
+  const [cart, setCart] = useState<any[]>([]);
   const [teamName, setTeamName] = useState("");
   const [tableNumber, setTableNumber] = useState("");
   const [utrId, setUtrId] = useState("");
-  const [screenshot, setScreenshot] = useState(null);
+  const [screenshot, setScreenshot] = useState<File | null>(null);
   const [isOpen, setIsOpen] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [currentTime, setCurrentTime] = useState(new Date());
   const { toast } = useToast();
 
+  // --- 1. TIME GATING LOGIC ---
   useEffect(() => {
     const checkTime = () => {
       const now = new Date();
       setCurrentTime(now);
       const hour = now.getHours();
       const min = now.getMinutes();
-      // Adjust this window as per your local testing needs
+      // Adjust this window: Currently set to 2:00 AM - 2:59 AM for your test
       const isWindowOpen = (hour === 2 && min >= 0 && min < 59); 
       setIsOpen(isWindowOpen);
     };
@@ -40,7 +53,8 @@ const FoodOrder = () => {
     return () => clearInterval(timer);
   }, []);
 
-  const addToCart = (item) => {
+  // --- 2. CART ACTIONS ---
+  const addToCart = (item: any) => {
     setCart((prev) => {
       const existing = prev.find((i) => i.id === item.id);
       if (existing) {
@@ -50,87 +64,79 @@ const FoodOrder = () => {
     });
   };
 
-  const updateQty = (id, delta) => {
+  const updateQty = (id: string, delta: number) => {
     setCart((prev) =>
       prev.map((i) => (i.id === id ? { ...i, qty: Math.max(1, i.qty + delta) } : i))
     );
   };
 
-  const removeFromCart = (id) => setCart((prev) => prev.filter((i) => i.id !== id));
+  const removeFromCart = (id: string) => setCart((prev) => prev.filter((i) => i.id !== id));
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  if (e.target.files?.[0]) {
-    setScreenshot(e.target.files[0]);
-    toast({ 
-      title: "DATA_LINKED", 
-      description: "Payment proof attached to payload." 
-    });
-  }
-};
-
-  
-
-
-
-const handleCheckout = async (e: React.FormEvent) => {
-  e.preventDefault();
-  
-  // 1. Basic Validation
-  if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
-    toast({ title: "INVALID_SEQUENCE", description: "Missing data or screenshot.", variant: "destructive" });
-    return;
-  }
-
-  try {
-    // 2. Upload to Cloudinary via Fetch (Easiest for Hackathons)
-    const formData = new FormData();
-    formData.append("file", screenshot);
-    formData.append("upload_preset", "s5dpknbv"); // Replace this!
-
-    const cloudinaryResponse = await fetch(
-      `https://api.cloudinary.com/v1_1/dle2azrsr/image/upload`, // Replace YOUR_CLOUD_NAME
-      { method: "POST", body: formData }
-    );
-    
-    const cloudinaryData = await cloudinaryResponse.json();
-    const imageUrl = cloudinaryData.secure_url;
-
-    if (!imageUrl) throw new Error("Cloudinary upload failed");
-
-    // 3. Save everything to Supabase
-    const { error: dbError } = await supabase
-      .from('food_orders')
-      .insert([
-        { 
-          team_name: teamName,
-          table_number: tableNumber,
-          utr_id: utrId,
-          order_manifest: cart, 
-          total_price: totalPrice,
-          screenshot_url: imageUrl // This is the Cloudinary link
-        }
-      ]);
-
-    if (dbError) throw dbError;
-
-    // 4. Success Sequence
-    toast({ title: "FUEL_LOCKED", description: "Order logged with Cloudinary image!" });
-    setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
-
-  } catch (error: any) {
-    toast({ title: "SYSTEM_ERROR", description: error.message, variant: "destructive" });
-    console.error(error);
-  }
-};
-
-
-
+    if (e.target.files?.[0]) {
+      setScreenshot(e.target.files[0]);
+      toast({ title: "DATA_LINKED", description: "Payment proof attached to payload." });
+    }
+  };
 
   const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const upiId = "harshitindia2005@okicici";
   const upiLink = `upi://pay?pa=${upiId}&pn=Harshit+Raj+Singh&am=${totalPrice}&cu=INR&tn=BuildFest_Order_${teamName}`;
 
-  
+  // --- 3. SUBMISSION LOGIC ---
+  const handleCheckout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
+      toast({ title: "INVALID_SEQUENCE", description: "Missing data or screenshot.", variant: "destructive" });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      // Step A: Upload to Cloudinary
+      const formData = new FormData();
+      formData.append("file", screenshot);
+      formData.append("upload_preset", "s5dpknbv"); 
+
+      const cloudinaryResponse = await fetch(
+        `https://api.cloudinary.com/v1_1/dle2azrsr/image/upload`,
+        { method: "POST", body: formData }
+      );
+      
+      const cloudinaryData = await cloudinaryResponse.json();
+      const imageUrl = cloudinaryData.secure_url;
+
+      if (!imageUrl) throw new Error("Cloudinary upload failed");
+
+      // Step B: Save to Supabase
+      const { error: dbError } = await supabase
+        .from('food_orders')
+        .insert([
+          { 
+            team_name: teamName,
+            table_number: tableNumber,
+            utr_id: utrId,
+            order_manifest: cart, 
+            total_price: totalPrice,
+            screenshot_url: imageUrl 
+          }
+        ]);
+
+      if (dbError) throw dbError;
+
+      // Step C: Success
+      toast({ title: "FUEL_LOCKED", description: "Order transmitted to central kitchen." });
+      setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
+
+    } catch (error: any) {
+      toast({ title: "SYSTEM_ERROR", description: error.message, variant: "destructive" });
+      console.error(error);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   if (!isOpen) {
     return (
@@ -154,7 +160,7 @@ const handleCheckout = async (e: React.FormEvent) => {
           <div className="flex items-center gap-4 text-accent-cyan text-[10px] tracking-widest mt-2 font-bold">
             <span className="flex items-center gap-1"><Terminal className="w-3 h-3" /> STATUS: LINK_ACTIVE</span>
             <span className="opacity-30">|</span>
-            <span className="flex items-center gap-1 text-white/40"><Clock className="w-3 h-3" /> WINDOW_CLOSE_STAMP: 23:59</span>
+            <span className="flex items-center gap-1 text-white/40"><Clock className="w-3 h-3" /> WINDOW_CLOSE: 23:59</span>
           </div>
         </header>
 
@@ -167,7 +173,7 @@ const handleCheckout = async (e: React.FormEvent) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {menuItems.filter(i => i.category === cat).map((item) => (
                 <div key={item.id} onClick={() => addToCart(item)} className="bg-white/5 border border-white/10 p-5 flex gap-5 group hover:border-accent-cyan/50 hover:bg-accent-cyan/5 transition-all cursor-pointer relative overflow-hidden">
-                   <div className="absolute top-0 left-0 w-1 h-full bg-accent-cyan/0 group-hover:bg-accent-cyan transition-all" />
+                  <div className="absolute top-0 left-0 w-1 h-full bg-accent-cyan/0 group-hover:bg-accent-cyan transition-all" />
                   <div className="text-4xl group-hover:scale-110 transition-transform duration-300">{item.image}</div>
                   <div className="flex-1">
                     <div className="flex justify-between font-black text-sm">
@@ -192,28 +198,28 @@ const handleCheckout = async (e: React.FormEvent) => {
              <h2 className="text-sm font-black text-white uppercase tracking-widest flex items-center gap-2">
                <ShoppingCart className="w-4 h-4 text-accent-cyan" /> Order_Manifest
              </h2>
-             <span className="text-[10px] text-white/20 font-mono">v2.0.42</span>
+             <span className="text-[10px] text-white/20">v2.1.0</span>
           </div>
 
           {cart.length === 0 ? (
             <div className="text-center py-20 border border-dashed border-white/5 bg-white/[0.02]">
-               <p className="text-white/20 text-xs italic tracking-widest font-black uppercase">Awaiting_Data_Input...</p>
+               <p className="text-white/20 text-xs italic tracking-widest font-black uppercase">Awaiting_Input...</p>
             </div>
           ) : (
             <div className="space-y-8">
-              <div className="space-y-4 max-h-60 overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-accent-cyan/20">
+              <div className="space-y-4 max-h-60 overflow-y-auto pr-2 custom-scrollbar">
                 {cart.map(item => (
-                  <div key={item.id} className="flex justify-between items-center text-xs group">
+                  <div key={item.id} className="flex justify-between items-center text-xs">
                     <div className="flex flex-col">
                       <span className="text-white/80 font-black uppercase tracking-tighter">{item.name}</span>
-                      <span className="text-accent-cyan/60 text-[10px]">₹{item.price} x {item.qty}</span>
+                      <span className="text-accent-cyan/60">₹{item.price} x {item.qty}</span>
                     </div>
                     <div className="flex items-center gap-3">
                       <div className="flex bg-white/5 border border-white/10 p-1">
-                        <button onClick={() => updateQty(item.id, -1)} className="p-1 hover:text-accent-cyan text-white/40"><Minus size={12}/></button>
-                        <button onClick={() => updateQty(item.id, 1)} className="p-1 hover:text-accent-cyan text-white/40"><Plus size={12}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); updateQty(item.id, -1); }} className="p-1 hover:text-accent-cyan text-white/40"><Minus size={12}/></button>
+                        <button onClick={(e) => { e.stopPropagation(); updateQty(item.id, 1); }} className="p-1 hover:text-accent-cyan text-white/40"><Plus size={12}/></button>
                       </div>
-                      <button onClick={() => removeFromCart(item.id)} className="text-white/10 hover:text-red-500 transition-colors"><Trash2 size={14}/></button>
+                      <button onClick={(e) => { e.stopPropagation(); removeFromCart(item.id); }} className="text-white/10 hover:text-red-500"><Trash2 size={14}/></button>
                     </div>
                   </div>
                 ))}
@@ -225,58 +231,67 @@ const handleCheckout = async (e: React.FormEvent) => {
                    <span className="text-2xl font-black text-accent-cyan italic leading-none">₹{totalPrice}</span>
                 </div>
 
-                {/* --- PRESENTABLE QR CODE SECTION --- */}
                 <div className="relative group p-4 border border-accent-cyan/20 bg-accent-cyan/[0.03] overflow-hidden">
-                   {/* Scanning animation line */}
                    <div className="absolute top-0 left-0 w-full h-1 bg-accent-cyan/20 animate-scan z-10" />
-                   
                    <div className="bg-white p-3 mx-auto max-w-[180px] shadow-[0_0_30px_rgba(0,242,255,0.1)]">
-                     <QRCodeSVG 
-                        value={upiLink} 
-                        size={156} 
-                        bgColor={"#ffffff"}
-                        fgColor={"#020617"}
-                        level={"H"}
-                        includeMargin={false}
-                     />
+                     <QRCodeSVG value={upiLink} size={156} bgColor={"#ffffff"} fgColor={"#020617"} level={"H"} />
                    </div>
-                   <div className="mt-4 text-center space-y-1">
+                   <div className="mt-4 text-center">
                       <p className="text-[9px] font-black text-accent-cyan uppercase tracking-widest">Protocol: UPI_Transfer</p>
-                      <p className="text-[8px] text-white/30 uppercase tracking-tighter font-bold">{upiId}</p>
+                      <p className="text-[8px] text-white/30 uppercase font-bold">{upiId}</p>
                    </div>
                 </div>
                 
                 <form onSubmit={handleCheckout} className="space-y-4">
                   <div className="space-y-2">
-                    <Input placeholder="TEAM_DESIGNATION" value={teamName} onChange={e => setTeamName(e.target.value)} className="bg-white/[0.03] border-white/10 rounded-none h-11 text-xs text-white placeholder:text-white/20 focus:border-accent-cyan transition-all" />
-                    <Input placeholder="TABLE_COORDINATES" value={tableNumber} onChange={e => setTableNumber(e.target.value)} className="bg-white/[0.03] border-white/10 rounded-none h-11 text-xs text-white placeholder:text-white/20 focus:border-accent-cyan transition-all" />
-                    <Input placeholder="UTR_HASH_ID" value={utrId} onChange={e => setUtrId(e.target.value)} className="bg-white/[0.03] border-accent-cyan/30 rounded-none h-11 text-xs text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan transition-all" />
+                    <Input disabled={isSubmitting} placeholder="TEAM_DESIGNATION" value={teamName} onChange={e => setTeamName(e.target.value)} className="bg-white/[0.03] border-white/10 rounded-none h-11 text-xs text-white focus:border-accent-cyan disabled:opacity-50" />
+                    <Input disabled={isSubmitting} placeholder="TABLE_COORDINATES" value={tableNumber} onChange={e => setTableNumber(e.target.value)} className="bg-white/[0.03] border-white/10 rounded-none h-11 text-xs text-white focus:border-accent-cyan disabled:opacity-50" />
+                    <Input disabled={isSubmitting} placeholder="UTR_HASH_ID" value={utrId} onChange={e => setUtrId(e.target.value)} className="bg-white/[0.03] border-accent-cyan/30 rounded-none h-11 text-xs text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan disabled:opacity-50" />
                   </div>
                   
-                  {/* TERMINAL UPLOAD AREA */}
                   <div className="relative group overflow-hidden">
-                    <input type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20" />
-                    <div className={`border-2 border-dashed p-5 flex flex-col items-center justify-center transition-all duration-500 ${screenshot ? 'border-green-500/50 bg-green-500/5' : 'border-white/10 bg-white/5 group-hover:border-accent-cyan/40'}`}>
+                    <input disabled={isSubmitting} type="file" accept="image/*" onChange={handleFileChange} className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20 disabled:cursor-not-allowed" />
+                    <div className={`border-2 border-dashed p-5 flex flex-col items-center justify-center transition-all ${screenshot ? 'border-green-500/50 bg-green-500/5' : 'border-white/10 bg-white/5 group-hover:border-accent-cyan/40'} ${isSubmitting ? 'opacity-50' : ''}`}>
                       {screenshot ? (
                         <div className="flex items-center gap-3">
                           <FileCheck className="w-5 h-5 text-green-400" />
-                          <div className="text-left">
-                            <span className="text-[9px] text-green-400 font-black uppercase block tracking-widest">Success: Data_Attached</span>
-                            <span className="text-[8px] text-white/30 uppercase line-clamp-1">{screenshot.name}</span>
+                          <div className="text-left font-black uppercase">
+                            <span className="text-[9px] text-green-400 block tracking-widest">Data_Attached</span>
+                            <span className="text-[8px] text-white/30 line-clamp-1">{screenshot.name}</span>
                           </div>
                         </div>
                       ) : (
                         <>
-                          <Upload className="w-6 h-6 text-white/20 mb-2 group-hover:text-accent-cyan group-hover:scale-110 transition-all" />
-                          <span className="text-[9px] text-white/40 uppercase font-black tracking-widest group-hover:text-white">Upload_Payment_Receipt</span>
+                          <Upload className="w-6 h-6 text-white/20 mb-2 group-hover:text-accent-cyan transition-all" />
+                          <span className="text-[9px] text-white/40 uppercase font-black tracking-widest group-hover:text-white">Upload_Receipt</span>
                         </>
                       )}
                     </div>
                   </div>
 
-                  <Button className="w-full bg-accent-cyan hover:bg-white text-[#020617] font-black uppercase text-xs rounded-none h-14 shadow-[0_10px_20px_rgba(0,242,255,0.15)] group relative overflow-hidden transition-all">
-                    <span className="relative z-10 flex items-center gap-2">Execute_Order_Sequence <Terminal size={14} /></span>
-                    <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine" />
+                  <Button 
+                    disabled={isSubmitting}
+                    className={`w-full font-black uppercase text-xs rounded-none h-14 transition-all relative overflow-hidden
+                      ${isSubmitting 
+                        ? 'bg-white/10 text-white/40 cursor-not-allowed border border-white/5' 
+                        : 'bg-accent-cyan hover:bg-white text-[#020617] shadow-[0_10px_20px_rgba(0,242,255,0.15)] group'
+                      }`}
+                  >
+                    <span className="relative z-10 flex items-center justify-center gap-2">
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="w-4 h-4 animate-spin text-accent-cyan" />
+                          Processing_Payload...
+                        </>
+                      ) : (
+                        <>
+                          Execute_Order_Sequence <Terminal size={14} />
+                        </>
+                      )}
+                    </span>
+                    {!isSubmitting && (
+                      <div className="absolute top-0 -inset-full h-full w-1/2 z-5 block transform -skew-x-12 bg-gradient-to-r from-transparent to-white/20 opacity-40 group-hover:animate-shine" />
+                    )}
                   </Button>
                 </form>
               </div>
@@ -285,21 +300,13 @@ const handleCheckout = async (e: React.FormEvent) => {
         </div>
       </aside>
 
-      {/* Global CSS for Animations */}
       <style dangerouslySetInnerHTML={{ __html: `
-        @keyframes scan {
-          0% { top: 0; }
-          100% { top: 100%; }
-        }
-        @keyframes shine {
-          100% { left: 125%; }
-        }
-        .animate-scan {
-          animation: scan 3s linear infinite;
-        }
-        .animate-shine {
-          animation: shine 0.8s ease-in-out;
-        }
+        @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+        @keyframes shine { 100% { left: 125%; } }
+        .animate-scan { animation: scan 3s linear infinite; }
+        .animate-shine { animation: shine 0.8s ease-in-out; }
+        .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(0, 242, 255, 0.2); }
       `}} />
     </div>
   );
