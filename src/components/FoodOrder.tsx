@@ -45,7 +45,7 @@ const FoodOrder = () => {
       const hour = now.getHours();
       const min = now.getMinutes();
       // Adjust this window: Currently set to 2:00 AM - 2:59 AM for your test
-      const isWindowOpen = (hour === 2 && min >= 0 && min < 59); 
+      const isWindowOpen = (hour === 3 && min >= 0 && min < 59); 
       setIsOpen(isWindowOpen);
     };
     const timer = setInterval(checkTime, 1000);
