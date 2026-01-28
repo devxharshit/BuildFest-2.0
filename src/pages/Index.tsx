@@ -1,4 +1,3 @@
-import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import LaserPillars from "@/components/LaserPillars";
 
@@ -13,8 +12,6 @@ const Index = () => {
         className="fixed inset-0 pointer-events-none"
         style={{ background: "var(--gradient-hero)" }}
       />
-      
-      <Navigation />
       
       <main>
         <Hero />

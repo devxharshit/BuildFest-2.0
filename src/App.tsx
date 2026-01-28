@@ -3,6 +3,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { ROUTES } from "@/config/routes";
 import Index from "./pages/Index";
 import PromptsPage from "./pages/PromptsPage";
 import DareBoxPage from "./pages/DareBoxPage";
@@ -27,13 +28,13 @@ const App = () => (
           
           <main className="flex-grow pt-24"> 
             <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/prompts" element={<PromptsPage />} />
-              <Route path="/dare" element={<DareBoxPage />} />
-              <Route path="/submit" element={<SubmitPage />} />
-              <Route path="/rulebook" element={<RulebookPage />} />
-              <Route path="/food" element={<FoodOrderPage />} />
-              <Route path="*" element={<NotFound />} />
+              <Route path={ROUTES.HOME} element={<Index />} />
+              <Route path={ROUTES.PROMPTS} element={<PromptsPage />} />
+              <Route path={ROUTES.DARE_BOX} element={<DareBoxPage />} />
+              <Route path={ROUTES.SUBMIT} element={<SubmitPage />} />
+              <Route path={ROUTES.RULEBOOK} element={<RulebookPage />} />
+              <Route path={ROUTES.FOOD_ORDER} element={<FoodOrderPage />} />
+              <Route path={ROUTES.NOT_FOUND} element={<NotFound />} />
             </Routes>
           </main>
 

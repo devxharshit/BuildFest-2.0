@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { useEffect, useRef } from "react";
 import { motion } from "framer-motion";
+import { ROUTES } from "@/config/routes";
 
 const BinaryBackground = () => {
   const canvasRef = useRef(null);
@@ -111,13 +112,13 @@ const Hero = () => {
         {/* Primary Call to Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-6 justify-center">
           <Link 
-            to="/prompts"
+            to={ROUTES.PROMPTS}
             className="group relative inline-flex items-center justify-center h-14 px-12 bg-accent-cyan text-[#020617] font-bold font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-105 shadow-[6px_6px_0px_#ef4444]"
           >
             Explore Prompts
           </Link>
           <Link 
-            to="/rulebook"
+            to={ROUTES.RULEBOOK}
             className="group inline-flex items-center justify-center h-14 px-10 border border-white/20 text-white font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:bg-white/10 hover:skew-x-0"
           >
             Rulebook

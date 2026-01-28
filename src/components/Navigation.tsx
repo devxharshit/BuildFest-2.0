@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X } from "lucide-react";
+import { ROUTES, NAVIGATION_ITEMS, CTA_BUTTON } from "@/config/routes";
 
 const Navigation = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -16,20 +17,13 @@ const Navigation = () => {
     }
   }, [isOpen]);
 
-  const navItems = [
-    { path: "/prompts", label: "Prompts" },
-    { path: "/dare", label: "Dare Box" },
-    { path: "/food", label: "Food" },
-    { path: "/rulebook", label: "Rulebook" },
-  ];
-
   return (
     <nav className="fixed top-0 left-0 right-0 z-[100] bg-[#020617] border-b border-white/10">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="flex items-center justify-between h-20 md:h-24">
           
           {/* BRANDING */}
-          <Link to="/" className="flex items-center gap-4 relative z-[110]">
+          <Link to={ROUTES.HOME} className="flex items-center gap-4 relative z-[110]">
             <img 
               src="/Novus_Full_White (1).png" 
               alt="Novus Logo" 
@@ -43,7 +37,7 @@ const Navigation = () => {
           
           {/* DESKTOP NAV */}
           <div className="hidden md:flex items-center gap-8">
-            {navItems.map((item) => (
+            {NAVIGATION_ITEMS.map((item) => (
               <Link
                 key={item.path}
                 to={item.path}
@@ -55,10 +49,10 @@ const Navigation = () => {
               </Link>
             ))}
             <Link
-              to="/submit"
+              to={CTA_BUTTON.path}
               className="px-6 py-2 border-2 border-accent-cyan bg-accent-cyan/10 text-accent-cyan font-mono font-black uppercase italic skew-x-[-12deg] hover:bg-accent-cyan hover:text-black transition-all"
             >
-              <span className="inline-block skew-x-[12deg]">SUBMIT</span>
+              <span className="inline-block skew-x-[12deg]">{CTA_BUTTON.label}</span>
             </Link>
           </div>
 
@@ -85,7 +79,7 @@ const Navigation = () => {
             <div className="absolute inset-0 pointer-events-none opacity-10 bg-[radial-gradient(#00f2ff_1px,transparent_1px)] [background-size:20px_20px]" />
 
             <div className="flex flex-col gap-8 relative z-10">
-              {navItems.map((item, i) => (
+              {NAVIGATION_ITEMS.map((item, i) => (
                 <motion.div
                   initial={{ opacity: 0, x: -20 }}
                   animate={{ opacity: 1, x: 0 }}
@@ -111,11 +105,11 @@ const Navigation = () => {
                 transition={{ delay: 0.4 }}
               >
                 <Link
-                  to="/submit"
+                  to={CTA_BUTTON.path}
                   onClick={() => setIsOpen(false)}
                   className="mt-6 px-8 py-4 border-2 border-accent-cyan bg-accent-cyan/10 text-accent-cyan font-mono font-black uppercase italic text-center block"
                 >
-                  [ SUBMIT_PROPOSAL ]
+                  [ {CTA_BUTTON.label}_PROPOSAL ]
                 </Link>
               </motion.div>
             </div>

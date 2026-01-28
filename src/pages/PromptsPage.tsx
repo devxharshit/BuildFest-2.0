@@ -1,11 +1,11 @@
-import Navigation from "@/components/Navigation";
+import { ROUTES } from "@/config/routes";
 import PageHeader from "@/components/PageHeader";
 import Prompts from "@/components/Prompts";
+import { Link } from "react-router-dom";
 
 const PromptsPage = () => {
   return (
     <div className="min-h-screen bg-[#020617] text-white relative">
-      <Navigation />
       
       {/* Reduced padding-top (pt-24) to bring it closer to the Nav Bar */}
       <main className="pt-24 pb-20 relative z-10">
@@ -27,9 +27,14 @@ const PromptsPage = () => {
           </div>
         </div>
 
-        {/* Minimal Exit Marker */}
-        <div className="mt-20 flex justify-center opacity-10">
-          <div className="font-mono text-[10px] tracking-[1em]">EOF</div>
+        {/* Navigation Footer */}
+        <div className="mt-20 flex flex-col items-center gap-6">
+          <div className="font-mono text-[10px] tracking-[1em] opacity-10">EOF</div>
+          <div className="flex gap-4 text-sm font-mono">
+            <Link to={ROUTES.HOME} className="text-accent-cyan/70 hover:text-accent-cyan transition-colors">← Back</Link>
+            <span className="text-white/20">•</span>
+            <Link to={ROUTES.DARE_BOX} className="text-accent-cyan/70 hover:text-accent-cyan transition-colors">Next →</Link>
+          </div>
         </div>
       </main>
     </div>

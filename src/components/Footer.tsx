@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { Phone, Globe, ShieldCheck } from "lucide-react";
+import { ROUTES } from "@/config/routes";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -76,7 +77,7 @@ const Footer = () => {
                 </a>
               </li>
               <li>
-                <Link to="/rulebook" className="group flex items-center gap-3 text-white/50 hover:text-white transition-all">
+                <Link to={ROUTES.RULEBOOK} className="group flex items-center gap-3 text-white/50 hover:text-white transition-all">
                   <ShieldCheck className="w-4 h-4 text-accent-cyan" />
                   <span className="text-[11px] font-bold uppercase tracking-wider border-b border-transparent group-hover:border-white/20">
                     Security_Policy

@@ -1,6 +1,7 @@
-import Navigation from "@/components/Navigation";
+import { ROUTES } from "@/config/routes";
 import PageHeader from "@/components/PageHeader";
 import Rulebook from "@/components/Rulebook";
+import { Link } from "react-router-dom";
 
 const RulebookPage = () => {
   return (
@@ -12,8 +13,6 @@ const RulebookPage = () => {
           background: `radial-gradient(circle at 50% -10%, #0a0f1e 0%, #020617 80%)`,
         }}
       />
-      
-      <Navigation />
       
       {/* Tight alignment to Nav (pt-24) and centered layout */}
       <main className="relative z-10 pt-24 pb-20">
@@ -50,9 +49,14 @@ const RulebookPage = () => {
           </div>
         </div>
 
-        {/* Minimal EOF Marker replacing the footer */}
-        <div className="mt-32 flex justify-center opacity-10">
-          <div className="font-mono text-[10px] tracking-[1em] uppercase">EOF</div>
+        {/* Navigation Footer */}
+        <div className="mt-20 flex flex-col items-center gap-6">
+          <div className="font-mono text-[10px] tracking-[1em] uppercase opacity-10">EOF</div>
+          <div className="flex gap-4 text-sm font-mono">
+            <Link to={ROUTES.FOOD_ORDER} className="text-accent-cyan/70 hover:text-accent-cyan transition-colors">← Back</Link>
+            <span className="text-white/20">•</span>
+            <Link to={ROUTES.SUBMIT} className="text-accent-cyan/70 hover:text-accent-cyan transition-colors">Next →</Link>
+          </div>
         </div>
       </main>
     </div>
