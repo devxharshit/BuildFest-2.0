@@ -156,10 +156,10 @@ const Submit = () => {
 
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
-            05_Post_Mortem_Logs (Optional)
+            05_Feedback(Optional)
           </label>
           <Textarea
-            placeholder="WHAT_DID_YOU_LEAVE_BEHIND?..."
+            placeholder="WHAT_DID_WE_LACK?..."
             value={formData.reflection}
             onChange={(e) => handleChange("reflection", e.target.value)}
             className="min-h-[120px] bg-black/40 border-accent-cyan/30 text-accent-cyan placeholder:text-accent-cyan/20 focus:border-accent-cyan focus:ring-1 focus:ring-accent-cyan/50 rounded-none font-mono text-sm resize-none transition-all"

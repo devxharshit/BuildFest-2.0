@@ -249,13 +249,13 @@ const handleCheckout = async (e: React.FormEvent) => {
                 </div>
                 
                 <form onSubmit={handleCheckout} className="space-y-3">
-                  <Input placeholder="TEAM_DESIGNATION" value={teamName} onChange={e => setTeamName(e.target.value)} className="bg-white/5 border-white/10 rounded-none text-xs text-white" />
-                  <Input placeholder="TABLE_COORDINATES" value={tableNumber} onChange={e => setTableNumber(e.target.value)} className="bg-white/5 border-white/10 rounded-none text-xs text-white" />
-                  <Input placeholder="UTR_HASH_ID" value={utrId} onChange={e => setUtrId(e.target.value)} className="bg-white/5 border-accent-cyan/30 rounded-none text-xs text-accent-cyan font-bold" />
+                  <Input placeholder="TEAM_NAME" value={teamName} onChange={e => setTeamName(e.target.value)} className="bg-white/5 border-white/10 rounded-none text-xs text-white" />
+                  <Input placeholder="TABLE_ROOM_NUMBER" value={tableNumber} onChange={e => setTableNumber(e.target.value)} className="bg-white/5 border-white/10 rounded-none text-xs text-white" />
+                  <Input placeholder="TRANSACTION_ID" value={utrId} onChange={e => setUtrId(e.target.value)} className="bg-white/5 border-accent-cyan/30 rounded-none text-xs text-accent-cyan font-bold" />
                   
                   <div className="relative border border-dashed border-white/20 p-4 text-center cursor-pointer">
                     <input type="file" accept="image/*" onChange={(e) => e.target.files?.[0] && setScreenshot(e.target.files[0])} className="absolute inset-0 opacity-0 cursor-pointer" />
-                    {screenshot ? <span className="text-[10px] text-green-400 font-black"><FileCheck className="inline mr-2" size={14}/> {screenshot.name}</span> : <span className="text-[10px] text-white/40 uppercase font-black">Upload_Receipt</span>}
+                    {screenshot ? <span className="text-[10px] text-green-400 font-black"><FileCheck className="inline mr-2" size={14}/> {screenshot.name}</span> : <span className="text-[10px] text-white/40 uppercase font-black">Upload_Payment_Screenshot</span>}
                   </div>
 
                   <Button disabled={isSubmitting} className="w-full bg-accent-cyan hover:bg-white text-[#020617] rounded-none font-black uppercase text-xs h-12">
