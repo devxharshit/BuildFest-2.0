@@ -4,49 +4,72 @@ import { motion, AnimatePresence } from "framer-motion";
 const prompts = [
   {
     id: 1,
-    title: "The Invisible Thread",
-    content: `Something connects two strangers who will never meet.
-    It could be a sound, a number, a moment in time.
-    What happens when one of them almost discovers it?
-    Build what exists between them—not them.`,
+    title: "Listening to the Ocean",
+    content: `The ocean produces vast streams of data, yet understanding breaks when signals are fragmented.
+    What does meaningful ecological intelligence look like at the moment of decision?
+    Imagine an AI-driven experience that helps someone sense marine change as it unfolds.
+    Decide who it serves, how insight appears, and what uncertainty you allow.`,
   },
   {
     id: 2,
-    title: "Second Language",
-    content: `There's a language that only appears at night.
-    It's not spoken, not written, not coded.
-    But somehow, people understand it anyway.
-    Create the interface where this language lives.`,
+    title: "Noticing Before It’s Too Late",
+    content: `Students rarely disengage suddenly—signals appear quietly and early.
+    What does it mean to notice risk without labeling or alarm?
+    Imagine an AI-driven experience that helps someone sense when a student is drifting away.
+    Decide how and when support should begin.`,
   },
   {
     id: 3,
-    title: "The Last Notification",
-    content: `A device sends its final message before going dark forever.
-    What does it say? Who receives it?
-    The message isn't important—the silence after is.
-    Build the moment just before the end.`,
+    title: "Trust Under Constant Attack",
+    content: `Banking threats evolve faster than rules, and signals are buried in noise.
+    What does real security look like in the moment of risk?
+    Imagine an AI-driven experience that senses threats as they unfold and acts across systems.
+    Decide whose trust is protected and how much autonomy the system should have.`,
   },
   {
     id: 4,
-    title: "Borrowed Time",
-    content: `Someone is given exactly 47 minutes they weren't supposed to have.
-    They know it. They can feel it slipping.
-    What would you build for those 47 minutes?
-    Not to save them—to make them matter.`,
+    title: "CyberSecurity & Digital Trust",
+    content: `Digital spaces demand trust when attention is low and decisions are rushed.
+    Safety is rarely questioned until something goes wrong.
+    What does feeling safe online really mean when information and influence move together?
+    Build the interface where credibility and consent are felt, not just displayed.`,
   },
   {
     id: 5,
-    title: "The Cartographer's Mistake",
-    content: `A map shows a place that doesn't exist—until people start going there.
-    The mistake becomes real through belief.
-    Build something that shouldn't exist,
-    but does now, because someone made it.`,
+    title: "Education — AI Concept Studio",
+    content: `Meaning hides inside symbols, diagrams, and half-written notes.
+    Confusion builds quietly when explanations don’t match how someone thinks.
+    What does real understanding look like at the moment confusion appears?
+    Build the moment where clarity replaces the pause in learning.`,
+  },
+  {
+    id: 6,
+    title: "Mining & Metallurgy Sustainability",
+    content: `Industrial decisions shape outcomes long after they are made.
+    Environmental impact accumulates across time, materials, and processes.
+    What would change if impact were felt while decisions were still being made?
+    Make the invisible consequences of routine choices visible and visceral.`,
+  },
+  {
+    id: 7,
+    title: "Trusting the Vote",
+    content: `Voting relies on trust, yet the process is rarely visible or verifiable.
+    What does a vote need in order to feel legitimate—anonymity, transparency, or proof?
+    Imagine a digital voting experience where confidence comes from the system itself.
+    Decide what remains invisible and how results become unquestionable.`,
+  },
+  {
+    id: 8,
+    title: "Open Innovation",
+    content: `The ultimate prompt: The one you define yourself.
+    When existing frameworks fail to capture a problem, create your own.
+    Build a solution for a challenge the world hasn't recognized yet.
+    Define the prompt, the user, and the impact.`,
   },
 ];
 
 const TimelineNode = ({ index, isHovered }: { index: number; isHovered: boolean }) => (
   <div className="absolute left-0 top-10 -translate-x-1/2 flex flex-col items-center z-10">
-    {/* Node Square - Hacker Style */}
     <div 
       className={`relative w-3 h-3 border rotate-45 transition-all duration-300 ${
         isHovered 
@@ -54,8 +77,6 @@ const TimelineNode = ({ index, isHovered }: { index: number; isHovered: boolean 
           : 'border-accent-cyan/40 bg-[#020617]'
       }`}
     />
-    
-    {/* Index Indicator */}
     <div 
       className={`absolute -left-12 top-[-4px] font-mono text-[10px] tracking-tighter transition-all duration-300 ${
         isHovered ? 'text-accent-cyan' : 'text-white/20'
@@ -72,8 +93,6 @@ const Prompts = () => {
   return (
     <div className="max-w-4xl mx-auto px-6">
       <div className="relative pl-8 md:pl-16">
-        
-        {/* Vertical Data Stream Line */}
         <div className="absolute left-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-accent-cyan/50 via-accent-cyan/10 to-transparent -translate-x-1/2" />
         
         <div className="space-y-12">
@@ -82,6 +101,7 @@ const Prompts = () => {
               key={prompt.id}
               initial={{ opacity: 0, x: 20 }}
               whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
               transition={{ delay: index * 0.1 }}
               onMouseEnter={() => setHoveredId(prompt.id)}
               onMouseLeave={() => setHoveredId(null)}
@@ -89,12 +109,10 @@ const Prompts = () => {
             >
               <TimelineNode index={index} isHovered={hoveredId === prompt.id} />
 
-              {/* Connector */}
               <div className={`absolute left-0 top-10 h-[1px] transition-all duration-500 ${
                 hoveredId === prompt.id ? 'w-10 bg-accent-cyan' : 'w-4 bg-white/10'
               }`} />
 
-              {/* Sharp Prompt Card */}
               <div
                 className={`relative p-6 md:p-8 transition-all duration-500 ml-4 border-l-2 ${
                   hoveredId === prompt.id
@@ -102,7 +120,6 @@ const Prompts = () => {
                     : "bg-[#0a0f1e] border-white/10"
                 }`}
               >
-                {/* Corner Accent */}
                 <div className={`absolute top-0 right-0 w-4 h-4 border-t border-r transition-all duration-300 ${
                   hoveredId === prompt.id ? 'border-accent-cyan opacity-100' : 'opacity-0'
                 }`} />
@@ -128,7 +145,6 @@ const Prompts = () => {
                   {prompt.content}
                 </p>
 
-                {/* Cyber Scanline Overlay */}
                 <AnimatePresence>
                   {hoveredId === prompt.id && (
                     <motion.div 
