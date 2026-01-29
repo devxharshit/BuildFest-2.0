@@ -8,11 +8,14 @@ import { supabase } from "@/lib/supabaseClient"; // 1. IMPORT SUPABASE
 import { toast } from "sonner"; // 2. IMPORT TOAST FOR FEEDBACK
 
 const prompts = [
-  "The Invisible Thread",
-  "Second Language", 
-  "The Last Notification",
-  "Borrowed Time",
-  "The Cartographer's Mistake",
+  "Listening to the Ocean",
+  "Noticing Before It’s Too Late", 
+  "Trust Under Constant Attack",
+  "CyberSecurity & Digital Trust",
+  "Education — AI Concept Studio",
+  "Mining & Metallurgy Sustainability",
+  "Trusting the Vote",
+  "Open Innovation"
 ];
 
 const Submit = () => {
