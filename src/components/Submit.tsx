@@ -89,7 +89,7 @@ const Submit = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           <div className="space-y-2">
             <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
-              01_Team_ID
+              01_Team_Name
             </label>
             <Input
               placeholder="ENTER_TEAM_NAME..."
@@ -118,7 +118,7 @@ const Submit = () => {
 
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
-            03_Selected_Challenge
+            03_Selected_Prompt
           </label>
           <select
             value={formData.promptChosen}
@@ -138,10 +138,10 @@ const Submit = () => {
 
         <div className="space-y-2">
           <label className="font-mono text-[10px] uppercase tracking-widest text-accent-cyan/50 ml-1">
-            04_Payload_URL
+            04_LinkedIn_URL
           </label>
           <Input
-            placeholder="HTTPS://LINKEDIN_OR_DEMO_URL"
+            placeholder="HTTPS://LINKEDIN_URL"
             type="url"
             value={formData.demoLink}
             onChange={(e) => handleChange("demoLink", e.target.value)}
