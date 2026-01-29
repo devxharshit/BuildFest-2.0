@@ -69,67 +69,64 @@ const BinaryBackground = () => {
 
 const Hero = () => {
   return (
-    /* pt-32 ensures content starts below the Navbar */
-    <section className="min-h-screen flex flex-col items-center justify-center px-6 relative overflow-hidden pt-32">
+    <section className="min-h-screen flex flex-col items-center justify-center px-4 sm:px-6 relative overflow-hidden pt-20 sm:pt-32">
       <BinaryBackground />
 
       <motion.div 
         initial={{ opacity: 0, y: 20 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.8 }}
-        className="text-center max-w-5xl mx-auto relative z-10"
+        className="text-center w-full max-w-5xl mx-auto relative z-10"
       >
-        {/* Connection Status Header */}
-        <div className="inline-flex items-center gap-3 mb-10 px-5 py-2 border border-accent-cyan/40 bg-black/80 backdrop-blur-md">
+        {/* Connection Status Header - Adjusted text size for small screens */}
+        <div className="inline-flex items-center gap-2 sm:gap-3 mb-6 sm:mb-10 px-3 sm:px-5 py-2 border border-accent-cyan/40 bg-black/80 backdrop-blur-md">
           <div className="flex gap-1.5">
             <span className="w-2 h-2 bg-red-500 rounded-full animate-pulse" />
             <span className="w-2 h-2 bg-yellow-500 rounded-full" />
             <span className="w-2 h-2 bg-green-500 rounded-full" />
           </div>
-          <p className="font-mono text-[10px] tracking-[0.4em] text-accent-cyan uppercase">
+          <p className="font-mono text-[8px] sm:text-[10px] tracking-[0.2em] sm:tracking-[0.4em] text-accent-cyan uppercase">
             CONNECTION: SECURE // PORT: 192.169.001
           </p>
         </div>
         
-        {/* Main Title Styled as per reference image */}
-        <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-10 text-white uppercase italic leading-[0.85]">
-          BUILDFEST <span className="text-accent-cyan underline decoration-4 underline-offset-[12px]">2.0</span>
+        {/* Main Title - Responsive fluid typography and line height */}
+        <h1 className="text-4xl xs:text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold tracking-tighter mb-8 sm:mb-10 text-white uppercase italic leading-[0.9] break-words">
+          BUILDFEST <span className="text-accent-cyan underline decoration-2 sm:decoration-4 underline-offset-[8px] sm:underline-offset-[12px]">2.0</span>
         </h1>
         
-        {/* Command Line Terminal Box */}
-
+        {/* Command Line Terminal Box - Fixed overflow and added mobile padding */}
         <motion.div 
-        className="bg-black/10 border-l-4 border-accent-cyan/40 p-6 mb-12 max-w-2xl mx-auto text-left backdrop-blur-md shadow-2xl overflow-x-hidden whitespace-nowrap">
-          <div className="absolute top-0 left-0 w-full h-full bg-black/10 z-1"></div>
-          <p className="font-mono text-sm sm:text-base text-accent-cyan/90 leading-relaxed italic">
-            <span className="text-white/40">{">"}</span> Accessing hackathon_v02.exe...<br />
-            <span className="text-white/40">{">"}</span> Not a hackathon. An overnight build odyssey.<br />
+          className="bg-black/10 border-l-4 border-accent-cyan/40 p-4 sm:p-6 mb-8 sm:mb-12 max-w-2xl mx-auto text-left backdrop-blur-md shadow-2xl overflow-hidden relative">
+          <div className="absolute top-0 left-0 w-full h-full bg-black/10 -z-1"></div>
+          <p className="font-mono text-xs sm:text-base text-accent-cyan/90 leading-relaxed italic whitespace-normal sm:whitespace-nowrap">
+            <span className="text-white/40">{">"}</span> Accessing hackathon_v02.exe...<br className="sm:hidden" />
+            <span className="text-white/40">{">"}</span> Not a hackathon. An overnight build odyssey.<br className="hidden sm:block" />
             <span className="text-white/40">{">"}</span> No problem statements. Only pure imagination.
           </p>
         </motion.div>
 
-        
-        {/* Primary Call to Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-6 justify-center">
+        {/* CTA Buttons - Full width on mobile */}
+        <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center items-center">
           <Link 
             to={ROUTES.PROMPTS}
-            className="group relative inline-flex items-center justify-center h-14 px-12 bg-accent-cyan text-[#020617] font-bold font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-105 shadow-[6px_6px_0px_#ef4444]"
+            className="w-full sm:w-auto group relative inline-flex items-center justify-center h-12 sm:h-14 px-8 sm:px-12 bg-accent-cyan text-[#020617] font-bold font-mono text-xs sm:text-sm uppercase skew-x-[-12deg] transition-all hover:skew-x-0 hover:scale-105 shadow-[4px_4px_0px_#ef4444] sm:shadow-[6px_6px_0px_#ef4444]"
           >
             Explore Prompts
           </Link>
           <Link 
             to={ROUTES.RULEBOOK}
-            className="group inline-flex items-center justify-center h-14 px-10 border border-white/20 text-white font-mono text-sm uppercase skew-x-[-12deg] transition-all hover:bg-white/10 hover:skew-x-0"
+            className="w-full sm:w-auto group inline-flex items-center justify-center h-12 sm:h-14 px-8 sm:px-10 border border-white/20 text-white font-mono text-xs sm:text-sm uppercase skew-x-[-12deg] transition-all hover:bg-white/10 hover:skew-x-0"
           >
             Rulebook
           </Link>
         </div>
 
-        {/* Global Metadata Tracker */}
-        <div className="mt-24 mb-2 flex justify-center gap-10 md:gap-16 font-mono text-[10px] text-muted-foreground/30 uppercase tracking-[0.3em]">
-          <div className="space-y-2"> <p className="text-accent-pink">01</p> <p>all_night.log</p> </div>
-          <div className="space-y-2"> <p className="text-accent-cyan">02</p> <p>zero_limits.sys</p> </div>
-          <div className="space-y-2"> <p className="text-white/60">03</p> <p>build_fest.pkg</p> </div>
+        {/* Global Metadata Tracker - Smaller gap and hidden overflow for narrow phones */}
+        <div className="mt-16 sm:mt-24 mb-2 flex justify-center gap-6 sm:gap-16 font-mono text-[8px] sm:text-[10px] text-muted-foreground/30 uppercase tracking-[0.2em] sm:tracking-[0.3em]">
+          <div className="space-y-1 sm:space-y-2"> <p className="text-accent-pink">01</p> <p className="hidden xs:block">all_night.log</p> </div>
+          <div className="space-y-1 sm:space-y-2"> <p className="text-accent-cyan">02</p> <p className="hidden xs:block">zero_limits.sys</p> </div>
+          <div className="space-y-1 sm:space-y-2"> <p className="text-white/60">03</p> <p className="hidden xs:block">build_fest.pkg</p> </div>
         </div>
       </motion.div>
     </section>
