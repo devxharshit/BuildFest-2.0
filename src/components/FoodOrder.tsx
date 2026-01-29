@@ -94,33 +94,60 @@ const FoodOrder = () => {
   const upiId = "harshitindia2005@okicici";
   const upiLink = `upi://pay?pa=${upiId}&pn=Harshit+Raj+Singh&am=${finalTotal}&cu=INR&tn=BuildFest_Order_${teamName}`;
 
-  const handleCheckout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
-      toast({ title: "INVALID_SEQUENCE", description: "Missing data or screenshot.", variant: "destructive" });
-      return;
-    }
-    setIsSubmitting(true);
-    try {
-      const formData = new FormData();
-      formData.append("file", screenshot);
-      formData.append("upload_preset", "s5dpknbv"); 
+  
+const handleCheckout = async (e: React.FormEvent) => {
+  e.preventDefault();
+  
+  if (!teamName || !tableNumber || !utrId || !screenshot || cart.length === 0) {
+    toast({ title: "INVALID_SEQUENCE", description: "Missing data or screenshot.", variant: "destructive" });
+    return;
+  }
 
-      const res = await fetch(`https://api.cloudinary.com/v1_1/dle2azrsr/image/upload`, { method: "POST", body: formData });
-      const data = await res.json();
+  setIsSubmitting(true);
+  try {
+    // 1. GENERATE OUTLET SUMMARY & QUANTITY STRING
+    // This creates a string like: "Stardom (Paneer Roll x2), Zero Degree (Burger x1)"
+    const outletSummary = cart.map(item => {
+      // Find which outlet this item belongs to from your menuData
+      const outlet = menuData.find(group => 
+        group.items.some(i => i.id === item.id)
+      )?.outlet || "Unknown";
       
-      const { error } = await supabase.from('food_orders').insert([{ 
-        team_name: teamName, table_number: tableNumber, utr_id: utrId,
-        order_manifest: cart, total_price: finalTotal, screenshot_url: data.secure_url 
-      }]);
+      return `${outlet}: ${item.name} (x${item.qty})`;
+    }).join(", ");
 
-      if (error) throw error;
-      toast({ title: "FUEL_LOCKED", description: "Order transmitted to central kitchen." });
-      setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
-    } catch (err: any) {
-      toast({ title: "SYSTEM_ERROR", description: err.message, variant: "destructive" });
-    } finally { setIsSubmitting(false); }
-  };
+    // 2. CLOUDINARY UPLOAD
+    const formData = new FormData();
+    formData.append("file", screenshot);
+    formData.append("upload_preset", "s5dpknbv"); 
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/dle2azrsr/image/upload`, { method: "POST", body: formData });
+    const cloudData = await res.json();
+    
+    // 3. SUPABASE INSERT
+    const { error } = await supabase.from('food_orders').insert([{ 
+      team_name: teamName, 
+      table_number: tableNumber, 
+      utr_id: utrId,
+      // order_manifest saves the full JSON object for developers
+      order_manifest: cart, 
+      // outlet_summary saves a readable string for the kitchen staff/admin
+      outlet_summary: outletSummary,
+      total_price: finalTotal, 
+      screenshot_url: cloudData.secure_url 
+    }]);
+
+    if (error) throw error;
+
+    toast({ title: "FUEL_LOCKED", description: "Order transmitted to central kitchen." });
+    setCart([]); setTeamName(""); setTableNumber(""); setUtrId(""); setScreenshot(null);
+  } catch (err: any) {
+    toast({ title: "SYSTEM_ERROR", description: err.message, variant: "destructive" });
+  } finally { 
+    setIsSubmitting(false); 
+  }
+};
+
 
   if (!isOpen) {
     return (
