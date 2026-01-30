@@ -41,6 +41,9 @@ const menuData = [
     items: [
       { id: "z-aloo-burger", name: "Aloo Tikki Burger", price: 50, description: "Classic crispy potato patty unit.", image: "🍔" },
       { id: "z-mexican-burger", name: "Mexican Burger", price: 90, description: "Spiced jalapeno & salsa protocol.", image: "🍔" },
+      { id: "z-farmhouse-pizza", name: "Farmhouse Pizza(M)", price: 280, description: "Classic farmhouse pizza with veggies.", image: "🍕" },
+      { id: "z-margarita-pizza", name: "Margarita Pizza(M)", price: 230, description: "Classic margarita pizza with veggies.", image: "🍕" },
+      { id: "z-exotica-pizza", name: "Exotica Pizza(M)", price: 330, description: "Exotic pizza with special toppings.", image: "🍕" },
     ]
   }
 ];
@@ -66,7 +69,7 @@ const FoodOrder = () => {
       const hour = now.getHours();
       const min = now.getMinutes();
       // Logic: 3:00 AM - 3:58 AM
-      const isWindowOpen = (hour === 2 && min >= 0 && min < 59); 
+      const isWindowOpen = (hour === 19 && min >= 0 && min < 59); 
       setIsOpen(isWindowOpen);
     };
     const timer = setInterval(checkTime, 1000);
@@ -91,8 +94,8 @@ const FoodOrder = () => {
   const subTotal = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
   const finalTotal = subTotal > 0 ? subTotal + TAX_FEE : 0;
   
-  const upiId = "harshitindia2005@okicici";
-  const upiLink = `upi://pay?pa=${upiId}&pn=Harshit+Raj+Singh&am=${finalTotal}&cu=INR&tn=BuildFest_Order_${teamName}`;
+  const upiId = "ganeshlaxmankotwade@okhdfcbank";
+  const upiLink = `upi://pay?pa=${upiId}&pn=Ganesh%20Kotwade&am=${finalTotal}&cu=INR&tn=BuildFest_Order_${teamName}`;
 
   
 const handleCheckout = async (e: React.FormEvent) => {
