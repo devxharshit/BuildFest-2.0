@@ -69,7 +69,7 @@ const FoodOrder = () => {
       const hour = now.getHours();
       const min = now.getMinutes();
       // Logic: 3:00 AM - 3:58 AM
-      const isWindowOpen = (hour === 22 && min >= 0 && min < 59); 
+      const isWindowOpen = (hour === 23 && min >= 0 && min < 15); 
       setIsOpen(isWindowOpen);
     };
     const timer = setInterval(checkTime, 1000);
