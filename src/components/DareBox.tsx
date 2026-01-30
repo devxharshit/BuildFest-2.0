@@ -7,16 +7,23 @@ import { toast } from "sonner";
 
 // UPDATED DARES LIST
 const dares = [
-  { id: 1, text: "Dark Mode Toggle: Implement a proper toggle that switches the entire theme. Readability must remain accessible." },
-  { id: 2, text: "Custom Loading State: Replace default loading with a custom spinner or micro-animation that communicates progress." },
-  { id: 3, text: "Emoji Interface: Replace selected text labels with emojis that communicate meaning clearly without harming accessibility." },
-  { id: 4, text: "Neon Glitch: Transform text into glowing cyan outlines that flicker on hover while remaining readable." },
-  { id: 5, text: "Gravity Shift: Animate content so it enters from the bottom as if gravity flipped. Motion must feel physical and smooth." },
-  { id: 6, text: "Floating Labels: Convert an input field to a floating label design where the label remains clear at all times." },
-  { id: 7, text: "Bouncing Icons: Add subtle bounce animations to icons on hover to attract attention without being distracting." },
-  { id: 8, text: "Language Switch: Translate the interface into another language (Hindi, French, or Spanish) with natural layouts." },
-  { id: 9, text: "Palette Shuffle + Project Rename: Change the color palette and rename the project using [Vegetable] + [Music Player]." },
-  { id: 10, text: "Feature Removal: Subtract one existing feature while making the product feel more complete and clear." },
+  { id: 1, text: "Blur-to-Clear: Load the page in a blurred state, then smoothly sharpen the content using CSS animation." },
+  { id: 2, text: "Time Freeze: Pause all animations when the user hovers over the page. Movement must resume cleanly." },
+  { id: 3, text: "Background Pulse: Make the background color or gradient subtly pulse to indicate interaction zones." },
+  { id: 4, text: "Scroll Parallax Layers: Create multiple layers that move at different speeds on scroll using only CSS transforms." },
+  { id: 5, text: "Morphing Buttons: Buttons should slightly change shape on hover—rounded to squircle to rectangle." },
+  { id: 6, text: "Cursor Highlight: The element under the cursor should be subtly brightened or outlined dynamically." },
+  { id: 7, text: "Tilted Typography: Rotate headings slightly (within ±5°) to add dynamism while keeping readability intact." },
+  { id: 8, text: "Bouncing Icons: Icons bounce subtly on hover or at intervals to draw attention." },
+  { id: 9, text: "No-Text Buttons: Replace all button text with icons and tooltips. Users should understand every action." },
+  { id: 10, text: "Section Teleport: Make a section appear to 'teleport' on hover using transform and opacity only." },
+  { id: 11, text: "Click Echo: On click, generate a ripple or echo effect radiating outward for interaction confirmation." },
+  { id: 12, text: "Text Reveal Mask: Reveal text using a moving mask animation instead of standard opacity." },
+  { id: 13, text: "Focus Tunnel: Dim everything except the active element using overlays to narrow attention." },
+  { id: 14, text: "Depth on Scroll: Increase shadow and scale slightly as the user scrolls down for a 3D effect." },
+  { id: 15, text: "Liquid Buttons: Buttons should react like liquid on hover using scale and border-radius animation." },
+  { id: 16, text: "Cursor Glow Trail: The cursor leaves a fading glow trail when moving over the main section." },
+  { id: 17, text: "Magnetic Elements: Buttons subtly pull toward the cursor before a click." },
 ];
 
 const DareBox = () => {
@@ -58,7 +65,7 @@ const DareBox = () => {
   const handleAcceptAssignment = async () => {
     if (!currentDare || !teamName) return;
 
-    setIsSyncing(true); // Start loading state
+    setIsSyncing(true);
     
     const { error } = await supabase
       .from('team_dares')
@@ -69,7 +76,7 @@ const DareBox = () => {
         }
       ]);
 
-    setIsSyncing(false); // Stop loading state
+    setIsSyncing(false);
 
     if (error) {
       console.error("Transmission Error:", error.message);
@@ -77,7 +84,6 @@ const DareBox = () => {
     } else {
       setIsLocked(true);
       toast.success("SUCCESS: Dare logged to BF_OS.");
-      console.log("SUCCESS: Dare logged to BF_OS.");
     }
   };
 
@@ -88,7 +94,6 @@ const DareBox = () => {
             isOpen ? "border-accent-cyan/40 shadow-[0_0_40px_rgba(0,242,255,0.1)]" : "border-white/10"
           }`}
         >
-          {/* HUD Corner Accents */}
           <div className="absolute top-0 left-0 w-2 h-2 border-t border-l border-accent-cyan" />
           <div className="absolute bottom-0 right-0 w-2 h-2 border-b border-r border-accent-cyan" />
 
